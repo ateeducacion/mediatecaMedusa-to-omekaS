@@ -18,9 +18,12 @@ def parse_arguments():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description='Run All Scripts for WordPress to Omeka S Migration')
     parser.add_argument('--omeka-url', required=True, help='Omeka S API URL')
+    parser.add_argument('--key-identity', required=True, help='Omeka S API key identity')
+    parser.add_argument('--key-credential', required=True, help='Omeka S API key credential')
     parser.add_argument('--wp-username', required=True, help='WordPress username')
     parser.add_argument('--wp-password', required=True, help='WordPress password')
     parser.add_argument('--csv', default='example_channels.csv', help='Path to CSV file with channel information (default: example_channels.csv)')
+    parser.add_argument('--config', default='migration_config.json', help='Path to migration configuration file (default: migration_config.json)')
     parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help='Set the logging level (default: INFO)')
     parser.add_argument('--skip-tests', action='store_true', help='Skip running tests')
@@ -76,7 +79,7 @@ def main():
     
     # Run migration
     print("\nRunning migration...")
-    command = f"python main.py --csv {args.csv} --omeka-url {args.omeka_url} --wp-username {args.wp_username} --wp-password {args.wp_password} --log-level {args.log_level}"
+    command = f"python main.py --csv {args.csv} --omeka-url {args.omeka_url} --key-identity {args.key_identity} --key-credential {args.key_credential} --wp-username {args.wp_username} --wp-password {args.wp_password} --config {args.config} --log-level {args.log_level}"
     if run_command(command) != 0:
         print("Migration failed. Please check the error messages and try again.")
         return

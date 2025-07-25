@@ -25,8 +25,11 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description='WordPress to Omeka S Migration Tool')
     parser.add_argument('--csv', required=True, help='Path to CSV file with channel information')
     parser.add_argument('--omeka-url', required=True, help='Omeka S API URL')
+    parser.add_argument('--key-identity', required=True, help='Omeka S API key identity')
+    parser.add_argument('--key-credential', required=True, help='Omeka S API key credential')
     parser.add_argument('--wp-username', required=True, help='WordPress username')
     parser.add_argument('--wp-password', required=True, help='WordPress password')
+    parser.add_argument('--config', help='Path to migration configuration file')
     parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help='Set the logging level')
     return parser.parse_args()
@@ -51,13 +54,18 @@ def main():
             omeka_url=args.omeka_url,
             wp_username=args.wp_username,
             wp_password=args.wp_password,
+            key_identity=args.key_identity,
+            key_credential=args.key_credential,
+            config_file=args.config,
             logger=logger
         )
         
         # Perform migration for each channel
         for channel in channels:
             logger.info(f"Migrating channel: {channel['name']}")
-            migration_manager.migrate_channel(channel)
+            result = migration_manager.migrate_channel(channel)
+            if 'import_jobs' in result:
+                logger.info(f"Created {len(result['import_jobs'])} bulk import jobs for channel: {channel['name']}")
         
         logger.info("Migration process completed successfully")
         

@@ -1,0 +1,162 @@
+{
+  "importers": [
+    {
+      "@type": "o-bulk:Importer",
+      "o:label": "T0. WP categories to Item Set XML",
+      "o-bulk:reader": "BulkImport\\Reader\\XmlReader",
+      "o-bulk:mapper": "module:xml/mapper_wp_xml_itemsets.xml",
+      "o-bulk:processor": "BulkImport\\Processor\\ItemSetProcessor",
+      "o:config": {
+        "importer": {
+          "as_task": "1",
+          "notify_end": "0"
+        },
+        "reader": {
+          "url": "",
+          "list_files": [],
+          "xsl_sheet_pre": "module:xsl/wp_omeka_itemset.xsl",
+          "xsl_sheet": "",
+          "xsl_params": []
+        },
+        "processor": {
+          "processing": "continue_on_error",
+          "skip_missing_files": false,
+          "entries_to_skip": 0,
+          "entries_max": 0,
+          "info_diffs": false,
+          "action": "create",
+          "action_unidentified": "create",
+          "identifier_name": null,
+          "value_datatype_literal": false,
+          "allow_duplicate_identifiers": false,
+          "action_identifier_update": "append",
+          "action_media_update": "append",
+          "action_item_set_update": "append",
+          "o:resource_template": null,
+          "o:resource_class": null,
+          "o:owner": "current",
+          "o:is_public": true,
+          "o:thumbnail": null
+        }
+      }
+    },
+    {
+      "@type": "o-bulk:Importer",
+      "o:label": "T1. WP posts to Items XML",
+      "o-bulk:reader": "BulkImport\\Reader\\XmlReader",
+      "o-bulk:mapper": "module:xml/mapper_wp_post_omeka_items.xml",
+      "o-bulk:processor": "BulkImport\\Processor\\ItemProcessor",
+      "o:config": {
+        "importer": {
+          "as_task": "1",
+          "notify_end": "0"
+        },
+        "reader": {
+          "url": "",
+          "list_files": [],
+          "xsl_sheet_pre": "module:xsl/wp_omeka_items_preprocesor.xsl",
+          "xsl_sheet": "",
+          "xsl_params": {
+              "postType": "attachment",
+              "postParent": "0",
+              "Media": "0"
+          }
+        },
+        "processor": {
+          "processing": "continue_on_error",
+          "skip_missing_files": true,
+          "entries_to_skip": 0,
+          "entries_max": 0,
+          "info_diffs": false,
+          "action": "replace",
+          "action_unidentified": "create",
+          "identifier_name": [
+              "dcterms:identifier"
+          ],
+          "value_datatype_literal": true,
+          "allow_duplicate_identifiers": true,
+          "action_identifier_update": "append",
+          "action_media_update": "append",
+          "action_item_set_update": "append",
+          "o:resource_template": null,
+          "o:resource_class": null,
+          "o:owner": "current",
+          "o:is_public": true,
+          "o:thumbnail": null
+        }
+      }
+    },
+    {
+      "@type": "o-bulk:Importer",
+      "o:label": "T2. WP attachments to Media XML",
+      "o-bulk:reader": "BulkImport\\Reader\\XmlReader",
+      "o-bulk:mapper": "module:xml/mapper_wp_post_omeka_media.xml",
+      "o-bulk:processor": "BulkImport\\Processor\\MediaProcessor",
+      "o:config": {
+        "importer": {
+          "as_task": "1",
+          "notify_end": "0"
+        },
+        "reader": {
+          "url":"",
+          "list_files":[],
+          "xsl_sheet_pre":"module:xsl\/wp_omeka_items_preprocesor.xsl",
+          "xsl_sheet":"",
+          "xsl_params":{
+             "postType":"attachment",
+             "postParent":"0",
+             "Media":"1"
+          }
+        },
+        "processor": {
+          "processing":"continue_on_error",
+          "skip_missing_files":false,
+          "entries_to_skip":0,
+          "entries_max":0,
+          "info_diffs":false,
+          "action":"create",
+          "action_unidentified":"create",
+          "identifier_name":[
+             "dcterms:identifier"
+          ],
+          "value_datatype_literal":false,
+          "allow_duplicate_identifiers":false,
+          "action_identifier_update":"append",
+          "action_media_update":"append",
+          "action_item_set_update":"append",
+          "o:resource_template":null,
+          "o:resource_class":null,
+          "o:owner":"current",
+          "o:is_public":true,
+          "o:thumbnail":null
+        }
+      }
+    }
+  ],
+  "imports_job": [
+    {
+      "importer_label": "0. WP categories to Item Set XML",
+      "xml_file": "ejemplo_simple3.xml",
+      "site_id": null,
+      "params": {
+        "process_type": "categories"
+      }
+    },
+    {
+      "importer_label": "1. WP posts to Items XML",
+      "xml_file": "",
+      "site_id": null,
+      "params": {
+        "process_type": "posts"
+      }
+    },
+    {
+      "importer_label": "2. WP attachments to Media XML",
+      "xml_file": "",
+      "site_id": null,
+      "params": {
+        "process_type": "attachments"
+      }
+    }
+  ]
+}

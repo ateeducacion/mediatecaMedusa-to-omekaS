@@ -9,7 +9,9 @@ This tool automates the migration of WordPress sites to Omeka S. It reads a CSV 
 - Create users in Omeka S
 - Add users to sites
 - Export WordPress data
-- Prepare for future job creation (to be implemented in future iterations)
+- Create bulk importers in Omeka S
+- Create bulk import jobs in Omeka S
+- Configure migration using JSON configuration files
 
 ## Project Structure
 
@@ -108,7 +110,7 @@ This script will:
 For migrating multiple channels from a CSV file:
 
 ```
-python main.py --csv <csv_file> --omeka-url <omeka_url> --wp-username <username> --wp-password <password>
+python main.py --csv <csv_file> --omeka-url <omeka_url> --wp-username <username> --wp-password <password> --config <config_file>
 ```
 
 Arguments:
@@ -116,12 +118,13 @@ Arguments:
 - `--omeka-url`: Omeka S API URL
 - `--wp-username`: WordPress username
 - `--wp-password`: WordPress password
+- `--config`: Path to migration configuration file
 - `--log-level`: Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
 
 You can also use the run_migration.py script for a simpler interface:
 
 ```
-python run_migration.py --omeka-url <omeka_url> --wp-username <username> --wp-password <password>
+python run_migration.py --omeka-url <omeka_url> --wp-username <username> --wp-password <password> --config <config_file>
 ```
 
 ### Test Script
@@ -230,10 +233,100 @@ Channel 1,https://example.com/channel1,channel1,user1
 Channel 2,https://example.com/channel2,channel2,user2
 ```
 
-## Future Iterations
+## Configuration File
 
-The following features will be implemented in future iterations:
-- Migration of item sets
-- Migration of items
-- Migration of media
-- Execution of jobs
+The migration process can be configured using a JSON file. The file should have the following structure:
+
+```json
+{
+  "importers": [
+    {
+      "@type": "o-bulk:Importer",
+      "o:label": "Importer Label",
+      "o-bulk:reader": "BulkImport\\Reader\\XmlReader",
+      "o-bulk:mapper": {
+        "@type": "o-bulk:Mapping",
+        "o:label": "mapper_label"
+      },
+      "o-bulk:processor": "BulkImport\\Processor\\ProcessorType",
+      "o:config": {
+        "importer": {
+          "as_task": "1",
+          "notify_end": "0"
+        },
+        "reader": {
+          "url": "",
+          "list_files": [],
+          "xsl_sheet_pre": "module:xsl/transformation.xsl",
+          "xsl_sheet": "",
+          "xsl_params": []
+        },
+        "processor": {
+          "processing": "continue_on_error",
+          "skip_missing_files": false,
+          "entries_to_skip": 0,
+          "entries_max": 0,
+          "info_diffs": false,
+          "action": "create",
+          "action_unidentified": "create",
+          "identifier_name": null,
+          "value_datatype_literal": false,
+          "allow_duplicate_identifiers": false,
+          "action_identifier_update": "append",
+          "action_media_update": "append",
+          "action_item_set_update": "append",
+          "o:resource_template": null,
+          "o:resource_class": null,
+          "o:owner": "current",
+          "o:is_public": false,
+          "o:thumbnail": null
+        }
+      }
+    }
+  ]
+}
+```
+
+The configuration file has one main section:
+
+1. `importers`: Configuration for each bulk importer
+   - `@type`: The type of the importer (usually "o-bulk:Importer")
+   - `o:label`: The label of the importer
+   - `o-bulk:reader`: The reader class to use
+   - `o-bulk:mapper`: The mapper to use
+   - `o-bulk:processor`: The processor class to use
+   - `o:config`: Configuration for the importer, reader, and processor
+
+A sample configuration file is provided in the project root directory: `migration_config.json`.
+
+## Bulk Import Process
+
+The migration process follows these steps:
+
+1. **Initialization**: When the MigrationManager is created with a configuration file, it immediately creates all the bulk importers defined in the configuration. This ensures that importers are created only once, not once per site.
+
+2. **Channel Migration**: For each channel in the CSV file:
+   - Create a site in Omeka S
+   - Create a user in Omeka S
+   - Add the user to the site
+   - Export WordPress data to XML
+   - Create bulk import jobs for this channel using all available importers
+
+For each channel and each importer, a bulk import job is created with the following configuration:
+- The XML file exported for the channel
+- The site name for the comment
+- The user ID for the owner of the imported resources
+
+This approach ensures that:
+- Importers are created only once, not once per site
+- Import jobs are created for each channel during its migration
+- Each import job is properly configured with the correct XML file, site name, and owner ID
+
+## Implemented Features
+
+The following features have been implemented:
+- Migration of WordPress channels to Omeka S sites
+- Creation of users and assignment to sites
+- Export of WordPress data to XML
+- Creation of bulk importers in Omeka S
+- Creation of bulk import jobs in Omeka S

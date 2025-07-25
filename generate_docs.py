@@ -31,6 +31,10 @@ def main():
     # Add the project root directory to the Python path
     sys.path.insert(0, project_root)
     
+    # Add the src directory to the Python path
+    src_dir = os.path.join(project_root, 'src')
+    sys.path.insert(0, src_dir)
+    
     # Check if pdoc is installed
     try:
         import pdoc
@@ -44,7 +48,8 @@ def main():
     os.makedirs(output_dir, exist_ok=True)
     
     # Generate documentation
-    command = f"pdoc --output-dir {output_dir} src"
+    # Use PYTHONPATH to include the src directory when running pdoc
+    command = f"set PYTHONPATH={project_root};{src_dir} && pdoc --output-dir {output_dir} src"
     
     # Run the command
     print(f"Running command: {command}")

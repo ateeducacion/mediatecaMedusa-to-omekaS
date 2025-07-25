@@ -17,12 +17,17 @@ def parse_arguments():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description='Run Test WordPress to Omeka S Migration')
     parser.add_argument('--omeka-url', required=True, help='Omeka S API URL')
+    parser.add_argument('--key-identity', required=True, help='Omeka S API key identity')
+    parser.add_argument('--key-credential', required=True, help='Omeka S API key credential')
     parser.add_argument('--wp-username', required=True, help='WordPress username')
     parser.add_argument('--wp-password', required=True, help='WordPress password')
     parser.add_argument('--channel-name', default='Test Channel', help='Name of the channel (default: Test Channel)')
     parser.add_argument('--channel-url', required=True, help='URL of the channel')
     parser.add_argument('--channel-slug', help='Slug of the channel (optional, will be generated from name if not provided)')
     parser.add_argument('--channel-editor', default='test_admin', help='Username of the editor (default: test_admin)')
+    parser.add_argument('--config', default='migration_config.json', help='Path to migration configuration file (default: migration_config.json)')
+    parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+                        help='Set the logging level')
     return parser.parse_args()
 
 def main():
@@ -31,7 +36,7 @@ def main():
     args = parse_arguments()
     
     # Build the command to run the test script
-    command = f"python test_migration.py --omeka-url {args.omeka_url} --wp-username {args.wp_username} --wp-password {args.wp_password} --channel-name \"{args.channel_name}\" --channel-url {args.channel_url}"
+    command = f"python src/test_migration.py --omeka-url {args.omeka_url} --key-identity {args.key_identity} --key-credential {args.key_credential} --wp-username {args.wp_username} --wp-password {args.wp_password} --channel-name \"{args.channel_name}\" --channel-url {args.channel_url} --config {args.config} --log-level {args.log_level}"
     
     # Add optional arguments if provided
     if args.channel_slug:
