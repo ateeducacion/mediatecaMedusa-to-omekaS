@@ -117,7 +117,7 @@ class OmekaAdapter:
         endpoint = f"{self.api_url}/sites/{site_id}"
         
         # First, get the current site data
-        response = self._make_request("GET", endpoint)
+        response = self._make_request("GET", endpoint, params={})
         
         if response.status_code != 200:
             self.logger.error(f"Failed to get site data. Site ID: {site_id}. Status code: {response.status_code}")
@@ -212,7 +212,7 @@ class OmekaAdapter:
             self.logger.error(f"Response: {response.text}")
             response.raise_for_status()
     
-    def create_bulk_import(self, importer_id: int, xml_file: str, site_name: str, owner_id: int = None) -> Dict[str, Any]:
+    def create_bulk_import(self, importer_id: int, xml_file: str, site_name: str, owner_id: int = None, site_id: int = None) -> Dict[str, Any]:
         """
         Create a new bulk import job in Omeka S.
         
@@ -221,6 +221,7 @@ class OmekaAdapter:
             xml_file: The path to the XML file to import.
             site_name: The name of the site for the comment.
             owner_id: The ID of the owner for the imported resources (optional).
+            site_id: The ID of the site for the SiteId parameter in xsl_params (optional).
             
         Returns:
             The created bulk import job data.
@@ -229,7 +230,7 @@ class OmekaAdapter:
         
         # Get the importer to determine its label and configuration
         importer_endpoint = f"{self.api_url}/bulk_importers/{importer_id}"
-        importer_response = self._make_request("GET", importer_endpoint)
+        importer_response = self._make_request("GET", importer_endpoint, params={})
         
         if importer_response.status_code != 200:
             self.logger.error(f"Failed to get importer. Importer ID: {importer_id}. Status code: {importer_response.status_code}")
@@ -250,7 +251,7 @@ class OmekaAdapter:
         
         # Update reader configuration with file information
         reader_config.update({
-            "filename": file_name,
+            "filename": f"/tmp/{file_name}",
             "file": {
                 "name": file_name,
                 "full_path": file_name,
@@ -260,9 +261,14 @@ class OmekaAdapter:
             }
         })
         
+        # Update SiteId parameter in xsl_params if provided
+        if site_id is not None and "xsl_params" in reader_config and "SiteId" in reader_config["xsl_params"]:
+            self.logger.info(f"Setting SiteId parameter to '{site_id}' for import job")
+            reader_config["xsl_params"]["SiteId"] = str(site_id)
+        
         # Update processor configuration with owner information
         if owner_id:
-            processor_config["o:owner"] = {"o:id": owner_id}
+            processor_config["o:owner"] = owner_id
         
         # Create import configuration
         import_config = {
@@ -304,7 +310,8 @@ class OmekaAdapter:
         endpoint = f"{self.api_url}/bulk_importers"
         
         self.logger.debug(f"Getting bulk importer by label: {label}")
-        response = self._make_request("GET", endpoint)
+        params = {"label": label}
+        response = self._make_request("GET", endpoint, params=params)
         
         if response.status_code == 200:
             importers = response.json()
@@ -333,7 +340,8 @@ class OmekaAdapter:
         endpoint = f"{self.api_url}/bulk_mappings"
         
         self.logger.debug(f"Getting bulk mapping by label: {label}")
-        response = self._make_request("GET", endpoint)
+        params = {"label": label}
+        response = self._make_request("GET", endpoint, params=params)
         
         if response.status_code == 200:
             mappings = response.json()
@@ -362,7 +370,8 @@ class OmekaAdapter:
         endpoint = f"{self.api_url}/sites"
         
         self.logger.info(f"Getting site by slug: {slug}")
-        response = self._make_request("GET", endpoint)
+        params = {"slug": slug}
+        response = self._make_request("GET", endpoint, params=params)
         
         if response.status_code == 200:
             sites = response.json()
@@ -391,7 +400,8 @@ class OmekaAdapter:
         endpoint = f"{self.api_url}/users"
         
         self.logger.debug(f"Getting user by email: {email}")
-        response = self._make_request("GET", endpoint)
+        params = {"email": email}
+        response = self._make_request("GET", endpoint, params=params)
         
         if response.status_code == 200:
             users = response.json()
@@ -407,7 +417,7 @@ class OmekaAdapter:
             self.logger.error(f"Response: {response.text}")
             response.raise_for_status()
     
-    def _make_request(self, method: str, endpoint: str, data: Dict[str, Any] = None) -> requests.Response:
+    def _make_request(self, method: str, endpoint: str, data: Dict[str, Any] = None, params: Dict[str, Any] = None) -> requests.Response:
         """
         Make a request to the Omeka S API.
         
@@ -415,6 +425,7 @@ class OmekaAdapter:
             method: The HTTP method (GET, POST, PUT, DELETE).
             endpoint: The API endpoint.
             data: The data to send (optional).
+            params: Additional query parameters to include in the request (optional).
             
         Returns:
             The response from the API.
@@ -424,12 +435,16 @@ class OmekaAdapter:
             "Accept": "application/json"
         }
         
+        # Initialize params if not provided
+        if params is None:
+            params = {}
+        
         # Add authentication headers if provided
         if self.key_identity and self.key_credential:
-            params = {
+            params.update({
                 "key_identity": self.key_identity,
                 "key_credential": self.key_credential
-            }
+            })
         
         if data:
             data_json = json.dumps(data)

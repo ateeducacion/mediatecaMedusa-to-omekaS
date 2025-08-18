@@ -240,12 +240,14 @@ class MigrationManager:
         import_jobs = []
         
         for importer in self.importers:
-            # Create import job for this channel and importer
+            # Create import job for this channel and importer, passing the site_id
+            # to update the SiteId parameter in the import job's xsl_params
             import_job = self.omeka_adapter.create_bulk_import(
                 importer_id=importer['o:id'],
                 xml_file=xml_file,
                 site_name=channel_name,
-                owner_id=user_id
+                owner_id=user_id,
+                site_id=site_id  # Pass the site_id to update the SiteId parameter
             )
             import_jobs.append(import_job)
             

@@ -65,14 +65,18 @@ python install_requirements.py --user
 The easiest way to get started is to use the quick start script:
 
 ```
-python quick_start.py --omeka-url <omeka_url> --wp-username <username> --wp-password <password> --channel-url <url>
+python quick_start.py --omeka-url <omeka_url> --key-identity <key_identity> --key-credential <key_credential> --wp-username <username> --wp-password <password> --channel-url <url>
 ```
 
 Arguments:
 - `--omeka-url`: Omeka S API URL
+- `--key-identity`: Omeka S API key identity
+- `--key-credential`: Omeka S API key credential
 - `--wp-username`: WordPress username
 - `--wp-password`: WordPress password
 - `--channel-url`: URL of the channel
+- `--config`: Path to migration configuration file (default: migration_config.json)
+- `--log-level`: Set the logging level (default: INFO)
 
 This script will:
 1. Check if the required packages are installed (and install them if needed)
@@ -84,14 +88,17 @@ This script will:
 You can also run all the scripts in the correct order:
 
 ```
-python run_all.py --omeka-url <omeka_url> --wp-username <username> --wp-password <password>
+python run_all.py --omeka-url <omeka_url> --key-identity <key_identity> --key-credential <key_credential> --wp-username <username> --wp-password <password>
 ```
 
 Arguments:
 - `--omeka-url`: Omeka S API URL
+- `--key-identity`: Omeka S API key identity
+- `--key-credential`: Omeka S API key credential
 - `--wp-username`: WordPress username
 - `--wp-password`: WordPress password
 - `--csv`: Path to CSV file with channel information (default: example_channels.csv)
+- `--config`: Path to migration configuration file (default: migration_config.json)
 - `--log-level`: Set the logging level (default: INFO)
 - `--skip-tests`: Skip running tests
 - `--skip-coverage`: Skip running coverage
@@ -110,12 +117,14 @@ This script will:
 For migrating multiple channels from a CSV file:
 
 ```
-python main.py --csv <csv_file> --omeka-url <omeka_url> --wp-username <username> --wp-password <password> --config <config_file>
+python main.py --csv <csv_file> --omeka-url <omeka_url> --key-identity <key_identity> --key-credential <key_credential> --wp-username <username> --wp-password <password> --config <config_file>
 ```
 
 Arguments:
 - `--csv`: Path to CSV file with channel information
 - `--omeka-url`: Omeka S API URL
+- `--key-identity`: Omeka S API key identity
+- `--key-credential`: Omeka S API key credential
 - `--wp-username`: WordPress username
 - `--wp-password`: WordPress password
 - `--config`: Path to migration configuration file
@@ -124,7 +133,7 @@ Arguments:
 You can also use the run_migration.py script for a simpler interface:
 
 ```
-python run_migration.py --omeka-url <omeka_url> --wp-username <username> --wp-password <password> --config <config_file>
+python run_migration.py --omeka-url <omeka_url> --key-identity <key_identity> --key-credential <key_credential> --wp-username <username> --wp-password <password> --config <config_file>
 ```
 
 ### Test Script
@@ -132,22 +141,26 @@ python run_migration.py --omeka-url <omeka_url> --wp-username <username> --wp-pa
 For testing the migration process with a single channel:
 
 ```
-python test_migration.py --omeka-url <omeka_url> --wp-username <username> --wp-password <password> --channel-name <name> --channel-url <url> --channel-editor <editor>
+python test_migration.py --omeka-url <omeka_url> --key-identity <key_identity> --key-credential <key_credential> --wp-username <username> --wp-password <password> --channel-name <name> --channel-url <url> --channel-editor <editor>
 ```
 
 Arguments:
 - `--omeka-url`: Omeka S API URL
+- `--key-identity`: Omeka S API key identity
+- `--key-credential`: Omeka S API key credential
 - `--wp-username`: WordPress username
 - `--wp-password`: WordPress password
 - `--channel-name`: Name of the channel
 - `--channel-url`: URL of the channel
 - `--channel-slug`: Slug of the channel (optional, will be generated from name if not provided)
 - `--channel-editor`: Username of the editor
+- `--config`: Path to migration configuration file
+- `--log-level`: Set the logging level (default: INFO)
 
 You can also use the run_test_migration.py script for a simpler interface:
 
 ```
-python run_test_migration.py --omeka-url <omeka_url> --wp-username <username> --wp-password <password> --channel-url <url>
+python run_test_migration.py --omeka-url <omeka_url> --key-identity <key_identity> --key-credential <key_credential> --wp-username <username> --wp-password <password> --channel-url <url>
 ```
 
 ### Other Scripts
@@ -330,3 +343,6 @@ The following features have been implemented:
 - Export of WordPress data to XML
 - Creation of bulk importers in Omeka S
 - Creation of bulk import jobs in Omeka S
+
+## Running task
+```sudo -u www-data php '/path/to/omeka/modules/EasyAdmin/data/scripts/task.php' --task 'BulkImport\Job\Import' --user-id 1 --server-url 'https://example.org' --base-path '/omeka-s' --args '{"bulk_import_id": 1}'```

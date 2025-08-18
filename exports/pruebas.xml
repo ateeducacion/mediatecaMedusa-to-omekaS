@@ -16,7 +16,7 @@
 <!-- 7. WordPress will then import each of the posts, pages, comments, categories, etc. -->
 <!--    contained in this file into your site. -->
 
-<!-- generator="WordPress/4.9.9" created="2025-07-25 11:51" -->
+<!-- generator="WordPress/4.9.9" created="2025-08-18 16:26" -->
 <rss version="2.0"
 	xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/"
 	xmlns:content="http://purl.org/rss/1.0/modules/content/"
@@ -29,7 +29,7 @@
 	<title>Pruebas CAU_CE</title>
 	<link>https://www3.gobiernodecanarias.org/medusa/mediateca/pruebas</link>
 	<description></description>
-	<pubDate>Fri, 25 Jul 2025 11:51:24 +0000</pubDate>
+	<pubDate>Mon, 18 Aug 2025 16:26:09 +0000</pubDate>
 	<language>es</language>
 	<wp:wxr_version>1.2</wp:wxr_version>
 	<wp:base_site_url>http://www3.gobiernodecanarias.org/medusa/mediateca/</wp:base_site_url>
@@ -5460,6 +5460,10 @@
 			<wp:meta_key><![CDATA[_kgvid-meta]]></wp:meta_key>
 			<wp:meta_value><![CDATA[a:20:{s:5:"embed";s:12:"Single Video";s:6:"height";s:3:"512";s:11:"actualwidth";s:3:"600";s:12:"actualheight";s:3:"480";s:6:"starts";s:1:"0";s:7:"play_25";s:1:"0";s:7:"play_50";s:1:"0";s:7:"play_75";s:1:"0";s:13:"completeviews";s:1:"0";s:6:"encode";a:7:{s:7:"fullres";s:2:"on";i:720;s:10:"notchecked";i:480;s:10:"notchecked";s:6:"mobile";s:10:"notchecked";s:4:"webm";s:10:"notchecked";s:3:"vp9";s:10:"notchecked";s:3:"ogg";s:10:"notchecked";}s:14:"numberofthumbs";s:1:"4";s:10:"lockaspect";s:2:"on";s:19:"gallery_thumb_width";s:3:"240";s:8:"duration";d:389.29000000000002046363078989088535308837890625;s:17:"original_replaced";s:4:"1080";s:13:"encodefullres";s:2:"on";s:10:"encode1080";s:10:"notchecked";s:9:"encode720";s:10:"notchecked";s:10:"encodewebm";s:10:"notchecked";s:9:"encodeogg";s:10:"notchecked";}]]></wp:meta_value>
 		</wp:postmeta>
+		<wp:postmeta>
+			<wp:meta_key><![CDATA[_kgvid_first_embedded_video]]></wp:meta_key>
+			<wp:meta_value><![CDATA[a:2:{s:4:"atts";a:2:{s:6:"poster";s:139:"https://www3.gobiernodecanarias.org/medusa/mediateca/pruebas/wp-content/uploads/sites/3/2015/06/10_Visiting-the-doctor_thumb195-169x135.jpg";s:6:"resize";s:4:"true";}s:7:"content";s:122:"https://www3.gobiernodecanarias.org/medusa/mediateca/pruebas/wp-content/uploads/sites/3/2015/06/10_Visiting-the-doctor.mp4";}]]></wp:meta_value>
+		</wp:postmeta>
 	</item>
 	<item>
 		<title>10_Visiting-the-doctor thumbnail</title>
@@ -6275,6 +6279,10 @@
 			<wp:meta_key><![CDATA[meta_hidden]]></wp:meta_key>
 			<wp:meta_value><![CDATA[]]></wp:meta_value>
 		</wp:postmeta>
+		<wp:postmeta>
+			<wp:meta_key><![CDATA[_kgvid_first_embedded_video]]></wp:meta_key>
+			<wp:meta_value><![CDATA[a:2:{s:4:"atts";a:2:{s:6:"poster";s:152:"https://www3.gobiernodecanarias.org/medusa/mediateca/pruebas/wp-content/uploads/sites/3/2016/02/LIFElampropeltis-subtitulado-ingles_thumb708-240x135.jpg";s:6:"resize";s:4:"true";}s:7:"content";s:135:"https://www3.gobiernodecanarias.org/medusa/mediateca/pruebas/wp-content/uploads/sites/3/2016/02/LIFElampropeltis-subtitulado-ingles.mp4";}]]></wp:meta_value>
+		</wp:postmeta>
 	</item>
 	<item>
 		<title>LIFE+lampropeltis subtitulado ingles miniatura</title>
@@ -6415,10 +6423,6 @@
 		<wp:postmeta>
 			<wp:meta_key><![CDATA[_edit_last]]></wp:meta_key>
 			<wp:meta_value><![CDATA[1]]></wp:meta_value>
-		</wp:postmeta>
-		<wp:postmeta>
-			<wp:meta_key><![CDATA[_kgvid_first_embedded_video]]></wp:meta_key>
-			<wp:meta_value><![CDATA[a:2:{s:4:"atts";a:2:{s:6:"poster";s:127:"https://www3.gobiernodecanarias.org/medusa/mediateca/pruebas/wp-content/uploads/sites/3/2016/02/tino-prueba_thumb37-240x135.jpg";s:6:"resize";s:4:"true";}s:7:"content";s:111:"https://www3.gobiernodecanarias.org/medusa/mediateca/pruebas/wp-content/uploads/sites/3/2016/02/tino-prueba.mp4";}]]></wp:meta_value>
 		</wp:postmeta>
 	</item>
 	<item>
@@ -8715,10 +8719,6 @@
 		<wp:postmeta>
 			<wp:meta_key><![CDATA[_thumbnail_id]]></wp:meta_key>
 			<wp:meta_value><![CDATA[1530]]></wp:meta_value>
-		</wp:postmeta>
-		<wp:postmeta>
-			<wp:meta_key><![CDATA[_kgvid_first_embedded_video]]></wp:meta_key>
-			<wp:meta_value><![CDATA[a:2:{s:4:"atts";a:2:{s:6:"poster";s:136:"https://www3.gobiernodecanarias.org/medusa/mediateca/pruebas/wp-content/uploads/sites/3/2022/11/production-id-4124024_thumb1-240x127.jpg";s:6:"resize";s:4:"true";}s:7:"content";s:121:"https://www3.gobiernodecanarias.org/medusa/mediateca/pruebas/wp-content/uploads/sites/3/2022/11/production-id-4124024.mp4";}]]></wp:meta_value>
 		</wp:postmeta>
 	</item>
 	<item>
