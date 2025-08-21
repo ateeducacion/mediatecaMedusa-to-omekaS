@@ -26,6 +26,10 @@ def parse_arguments():
     parser.add_argument('--config', default='migration_config.json', help='Path to migration configuration file (default: migration_config.json)')
     parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help='Set the logging level')
+    parser.add_argument('--as-task', choices=['y', 'n'], default='n', 
+                        help='Save as task (y) or execute immediately (n). Default: n')
+    parser.add_argument('--execute-tasks', type=str,
+                        help='JSON string with bulk_import_ids to execute: \'{"bulk_import_id":[1,2,3]}\'')
     return parser.parse_args()
 
 def run_command(command):
@@ -55,7 +59,14 @@ def main():
     
     # Run test migration
     print("\nRunning test migration...")
-    command = f"python run_test_migration.py --omeka-url {args.omeka_url} --key-identity {args.key_identity} --key-credential {args.key_credential} --wp-username {args.wp_username} --wp-password {args.wp_password} --channel-url {args.channel_url} --config {args.config} --log-level {args.log_level}"
+    command = f"python run_test_migration.py --omeka-url {args.omeka_url} --key-identity {args.key_identity} --key-credential {args.key_credential} --wp-username {args.wp_username} --wp-password {args.wp_password} --channel-url {args.channel_url} --config {args.config} --log-level {args.log_level} --as-task {args.as_task}"
+    
+    # Add execute-tasks parameter if provided
+    if args.execute_tasks:
+        # Ensure proper JSON escaping for command line
+        escaped_tasks = args.execute_tasks.replace('"', '\\"')
+        command += f" --execute-tasks \"{escaped_tasks}\""
+    
     if run_command(command) != 0:
         print("Test migration failed. Please check the error messages and try again.")
         return

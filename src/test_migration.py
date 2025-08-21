@@ -31,6 +31,10 @@ def parse_arguments():
     parser.add_argument('--config', help='Path to migration configuration file')
     parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help='Set the logging level')
+    parser.add_argument('--as-task', choices=['y', 'n'], default='n', 
+                        help='Save as task (y) or execute immediately (n). Default: n')
+    parser.add_argument('--execute-tasks', type=str,
+                        help='JSON string with bulk_import_ids to execute: \'{"bulk_import_id":[1,2,3]}\'')
     return parser.parse_args()
 
 def main():
@@ -51,9 +55,36 @@ def main():
             key_identity=args.key_identity,
             key_credential=args.key_credential,
             config_file=args.config,
-            logger=logger
+            logger=logger,
+            as_task=(args.as_task == 'y')
         )
         
+        # Handle execute-tasks mode
+        if args.execute_tasks:
+            try:
+                print(args.execute_tasks)
+                tasks_data = json.loads(args.execute_tasks)
+                bulk_import_ids = tasks_data.get('bulk_import_id', [])
+                logger.info(f"Executing {len(bulk_import_ids)} bulk import tasks")
+                
+                results = migration_manager.execute_bulk_import_tasks(bulk_import_ids)
+                for result in results:
+                    if result['success']:
+                        logger.info(f"Task {result['bulk_import_id']} executed successfully")
+                    else:
+                        logger.error(f"Task {result['bulk_import_id']} failed: {result['error']}")
+                
+                logger.info("Task execution completed")
+                return
+                
+            except json.JSONDecodeError as e:
+                logger.error(f"Invalid JSON format for --execute-tasks: {str(e)}")
+                sys.exit(1)
+            except Exception as e:
+                logger.error(f"Error executing tasks: {str(e)}")
+                sys.exit(1)
+        
+        # Normal migration process
         # Create channel data
         channel = {
             'name': args.channel_name,

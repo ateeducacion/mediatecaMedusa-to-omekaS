@@ -39,6 +39,7 @@ src/
   - typing
   - coverage (for running tests with coverage)
   - pdoc (for generating documentation)
+- Environment variable $OMEKA_PATH must be set to Omeka-S root path. '/var/www/html' is taken by default
 
 You can install the required packages with:
 
@@ -77,6 +78,8 @@ Arguments:
 - `--channel-url`: URL of the channel
 - `--config`: Path to migration configuration file (default: migration_config.json)
 - `--log-level`: Set the logging level (default: INFO)
+- `--as-task`: Save as task (y) or execute immediately (n). Default: n
+- `--execute-tasks`: JSON string with bulk_import_ids to execute: `'{"bulk_import_id":[1,2,3]}'`
 
 This script will:
 1. Check if the required packages are installed (and install them if needed)
@@ -103,6 +106,8 @@ Arguments:
 - `--skip-tests`: Skip running tests
 - `--skip-coverage`: Skip running coverage
 - `--skip-docs`: Skip generating documentation
+- `--as-task`: Save as task (y) or execute immediately (n). Default: n
+- `--execute-tasks`: JSON string with bulk_import_ids to execute: `'{"bulk_import_id":[1,2,3]}'`
 
 This script will:
 1. Check if the required packages are installed (and install them if needed)
@@ -129,6 +134,8 @@ Arguments:
 - `--wp-password`: WordPress password
 - `--config`: Path to migration configuration file
 - `--log-level`: Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+- `--as-task`: Save as task (y) or execute immediately (n). Default: n
+- `--execute-tasks`: JSON string with bulk_import_ids to execute: `'{"bulk_import_id":[1,2,3]}'`
 
 You can also use the run_migration.py script for a simpler interface:
 
@@ -156,6 +163,8 @@ Arguments:
 - `--channel-editor`: Username of the editor
 - `--config`: Path to migration configuration file
 - `--log-level`: Set the logging level (default: INFO)
+- `--as-task`: Save as task (y) or execute immediately (n). Default: n
+- `--execute-tasks`: JSON string with bulk_import_ids to execute: `'{"bulk_import_id":[1,2,3]}'`
 
 You can also use the run_test_migration.py script for a simpler interface:
 
@@ -335,6 +344,71 @@ This approach ensures that:
 - Import jobs are created for each channel during its migration
 - Each import job is properly configured with the correct XML file, site name, and owner ID
 
+## New Parameters
+
+### --as-task Parameter
+
+The `--as-task` parameter controls how bulk import jobs are handled:
+
+- **`--as-task n`** (default): Bulk import jobs are executed immediately by Omeka S
+  - The `as_task` parameter in the configuration is set to "0"
+  - Omeka S starts the migration process immediately when the bulk import job is created
+  - Suitable for smaller migrations or when you want immediate processing
+
+- **`--as-task y`**: Bulk import jobs are saved as tasks for later execution
+  - The `as_task` parameter in the configuration is set to "1"
+  - Omeka S saves the bulk import as a task that can be executed later using command line tools
+  - Suitable for larger migrations or when you want to control when the processing happens
+
+Example usage:
+```bash
+# Execute immediately (default)
+python main.py --csv channels.csv --omeka-url https://example.com/api --key-identity key --key-credential cred --wp-username user --wp-password pass --as-task n
+
+# Save as tasks for later execution
+python main.py --csv channels.csv --omeka-url https://example.com/api --key-identity key --key-credential cred --wp-username user --wp-password pass --as-task y
+```
+
+### --execute-tasks Parameter
+
+The `--execute-tasks` parameter allows you to execute previously created bulk import tasks:
+
+- **Format**: JSON string with the format `'{"bulk_import_id":[1,2,3]}'`
+- **Behavior**: When this parameter is provided, the program skips the normal migration process (creating sites, users, exporters, etc.) and only executes the specified tasks
+- **Execution**: Uses the PHP command line tool to execute each task: 
+  ```bash
+  php '/var/www/html/modules/EasyAdmin/data/scripts/task.php' --task 'BulkImport\Job\Import' --user-id 1 --args '{"bulk_import_id": TASK_ID}'
+  ```
+
+Example usage:
+```bash
+# Execute specific bulk import tasks
+python main.py --csv channels.csv --omeka-url https://example.com/api --key-identity key --key-credential cred --wp-username user --wp-password pass --execute-tasks '{"bulk_import_id":[505,506,507]}'
+```
+
+### Workflow Examples
+
+#### Two-Step Migration Process
+
+1. **Step 1**: Create migration structure and save as tasks
+   ```bash
+   python main.py --csv channels.csv --omeka-url https://example.com/api --key-identity key --key-credential cred --wp-username user --wp-password pass --as-task y
+   ```
+   This creates sites, users, exports data, and creates bulk import jobs saved as tasks.
+
+2. **Step 2**: Execute the tasks when ready
+   ```bash
+   python main.py --csv channels.csv --omeka-url https://example.com/api --key-identity key --key-credential cred --wp-username user --wp-password pass --execute-tasks '{"bulk_import_id":[1,2,3,4,5]}'
+   ```
+   This executes the previously created tasks.
+
+#### Single-Step Migration Process
+
+```bash
+python main.py --csv channels.csv --omeka-url https://example.com/api --key-identity key --key-credential cred --wp-username user --wp-password pass --as-task n
+```
+This creates the complete migration structure and executes the bulk imports immediately.
+
 ## Implemented Features
 
 The following features have been implemented:
@@ -343,6 +417,8 @@ The following features have been implemented:
 - Export of WordPress data to XML
 - Creation of bulk importers in Omeka S
 - Creation of bulk import jobs in Omeka S
+- Task-based execution control with `--as-task` parameter
+- Selective task execution with `--execute-tasks` parameter
 
 ## Running task
 ```sudo -u www-data php '/path/to/omeka/modules/EasyAdmin/data/scripts/task.php' --task 'BulkImport\Job\Import' --user-id 1 --server-url 'https://example.org' --base-path '/omeka-s' --args '{"bulk_import_id": 1}'```

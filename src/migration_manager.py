@@ -22,7 +22,8 @@ class MigrationManager:
     def __init__(self, omeka_url: str, wp_username: str, wp_password: str, 
                  key_identity: Optional[str] = None, key_credential: Optional[str] = None,
                  config_file: Optional[str] = None,
-                 logger: Optional[logging.Logger] = None):
+                 logger: Optional[logging.Logger] = None,
+                 as_task: bool = False):
         """
         Initialize the migration manager.
         
@@ -34,12 +35,14 @@ class MigrationManager:
             key_credential: The credential key for Omeka S API authentication (optional).
             config_file: Path to the configuration file (optional).
             logger: A logger instance (optional).
+            as_task: Whether to save bulk imports as tasks (True) or execute immediately (False).
         """
         self.omeka_adapter = OmekaAdapter(omeka_url, key_identity, key_credential, logger)
         self.wp_exporter = WordPressExporter(wp_username, wp_password)
         self.logger = logger or logging.getLogger(__name__)
         self.config = None
         self.importers = []
+        self.as_task = as_task
         
         # Create exports directory if it doesn't exist
         self.exports_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'exports')
@@ -48,6 +51,8 @@ class MigrationManager:
         # Load configuration if provided
         if config_file:
             self.load_config(config_file)
+            # Update configuration based on as_task parameter
+            self._update_config_for_task_mode()
             # Create importers once during initialization
             self.importers = self.create_bulk_importers()
     
@@ -306,3 +311,149 @@ class MigrationManager:
             self.logger.info(f"Importer created: {label} (ID: {importer['o:id']})")
         
         return importers
+    
+    def _update_config_for_task_mode(self):
+        """
+        Update the configuration based on the as_task parameter.
+        """
+        if not self.config or 'importers' not in self.config:
+            return
+        
+        task_value = "1" if self.as_task else "0"
+        self.logger.info(f"Setting as_task parameter to '{task_value}' for all importers")
+        
+        for importer_config in self.config['importers']:
+            if 'o:config' in importer_config and 'importer' in importer_config['o:config']:
+                importer_config['o:config']['importer']['as_task'] = task_value
+            else:
+                # Create the structure if it doesn't exist
+                if 'o:config' not in importer_config:
+                    importer_config['o:config'] = {}
+                if 'importer' not in importer_config['o:config']:
+                    importer_config['o:config']['importer'] = {}
+                importer_config['o:config']['importer']['as_task'] = task_value
+    
+    def execute_bulk_import_tasks(self, bulk_import_ids: List[int]) -> List[Dict[str, Any]]:
+        """
+        Execute bulk import tasks using PHP command in the background.
+        
+        Args:
+            bulk_import_ids: List of bulk import IDs to execute.
+            
+        Returns:
+            A list of execution results with job IDs.
+        """
+        import subprocess
+        import re
+        import time
+        
+        self.logger.info(f"Executing {len(bulk_import_ids)} bulk import tasks in background")
+        results = []
+        
+        for bulk_import_id in bulk_import_ids:
+            try:
+                # Construct the PHP command
+                # Get OMEKA_PATH from environment variable, default to '/var/www/html' if not set
+                omeka_path = os.environ.get('OMEKA_PATH', '/var/www/html')
+                task_script_path = f"{omeka_path}/modules/EasyAdmin/data/scripts/task.php"
+                
+                # php '$OMEKA_PATH/modules/EasyAdmin/data/scripts/task.php' --task 'BulkImport\Job\Import' --user-id 1 --args '{"bulk_import_id": 505}'
+                cmd = [
+                    'php',
+                    task_script_path,
+                    '--task', 'BulkImport\\Job\\Import',
+                    '--user-id', '1',
+                    '--args', f'{{"bulk_import_id": {bulk_import_id}}}'
+                ]
+                
+                self.logger.info(f"Starting task for bulk_import_id: {bulk_import_id} in background")
+                self.logger.debug(f"Command: {' '.join(cmd)}")
+                
+                # Execute the command in background
+                process = subprocess.Popen(
+                    cmd,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    bufsize=1,
+                    universal_newlines=True
+                )
+                
+                # Read the first few lines of output to get the job ID
+                job_id = None
+                start_time = time.time()
+                timeout = 10  # 10 seconds timeout to get job ID
+                
+                # Read output line by line until we find the job ID or timeout
+                while time.time() - start_time < timeout:
+                    # Check if process has output ready
+                    if process.stdout.readable():
+                        line = process.stdout.readline()
+                        if not line:
+                            time.sleep(0.1)
+                            continue
+                            
+                        self.logger.debug(f"Task output: {line.strip()}")
+                        
+                        # Look for job ID in the output
+                        match = re.search(r'Task .+ is starting \(job: #(\d+)\)', line)
+                        if match:
+                            job_id = match.group(1)
+                            self.logger.info(f"Found job ID: {job_id} for bulk_import_id: {bulk_import_id}")
+                            break
+                    else:
+                        time.sleep(0.1)
+                
+                # Add result to the list
+                if job_id:
+                    results.append({
+                        'bulk_import_id': bulk_import_id,
+                        'job_id': job_id,
+                        'success': True,
+                        'error': None,
+                        'process': process  # Store process object for potential future use
+                    })
+                else:
+                    # Check if process failed immediately
+                    if process.poll() is not None:
+                        stderr_output = process.stderr.read()
+                        error_msg = stderr_output or "Unknown error, process exited without job ID"
+                        self.logger.error(f"Task for bulk_import_id: {bulk_import_id} failed: {error_msg}")
+                        results.append({
+                            'bulk_import_id': bulk_import_id,
+                            'job_id': None,
+                            'success': False,
+                            'error': error_msg,
+                            'process': process
+                        })
+                    else:
+                        # Process is running but we couldn't get job ID
+                        self.logger.warning(f"Task for bulk_import_id: {bulk_import_id} started but couldn't get job ID")
+                        results.append({
+                            'bulk_import_id': bulk_import_id,
+                            'job_id': None,
+                            'success': True,
+                            'error': "Job ID not found in output",
+                            'process': process
+                        })
+                
+            except Exception as e:
+                error_msg = f"Error starting task for bulk_import_id: {bulk_import_id}: {str(e)}"
+                self.logger.error(error_msg)
+                results.append({
+                    'bulk_import_id': bulk_import_id,
+                    'job_id': None,
+                    'success': False,
+                    'error': error_msg,
+                    'process': None
+                })
+        
+        # Remove process objects from results before returning
+        clean_results = []
+        for result in results:
+            result_copy = result.copy()
+            if 'process' in result_copy:
+                del result_copy['process']
+            clean_results.append(result_copy)
+        
+        return clean_results

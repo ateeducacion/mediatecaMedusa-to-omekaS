@@ -25,6 +25,10 @@ def parse_arguments():
     parser.add_argument('--config', default='migration_config.json', help='Path to migration configuration file (default: migration_config.json)')
     parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help='Set the logging level (default: INFO)')
+    parser.add_argument('--as-task', choices=['y', 'n'], default='n', 
+                        help='Save as task (y) or execute immediately (n). Default: n')
+    parser.add_argument('--execute-tasks', type=str,
+                        help='JSON string with bulk_import_ids to execute: \'{"bulk_import_id":[1,2,3]}\'')
     return parser.parse_args()
 
 def main():
@@ -33,7 +37,11 @@ def main():
     args = parse_arguments()
     
     # Build the command to run the main script
-    command = f"python main.py --csv {args.csv} --omeka-url {args.omeka_url} --key-identity {args.key_identity} --key-credential {args.key_credential} --wp-username {args.wp_username} --wp-password {args.wp_password} --config {args.config} --log-level {args.log_level}"
+    command = f"python main.py --csv {args.csv} --omeka-url {args.omeka_url} --key-identity {args.key_identity} --key-credential {args.key_credential} --wp-username {args.wp_username} --wp-password {args.wp_password} --config {args.config} --log-level {args.log_level} --as-task {args.as_task}"
+    
+    # Add execute-tasks parameter if provided
+    if args.execute_tasks:
+        command += f" --execute-tasks '{args.execute_tasks}'"
     
     # Print the command
     print(f"Running command: {command}")

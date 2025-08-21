@@ -16,7 +16,7 @@
 <!-- 7. WordPress will then import each of the posts, pages, comments, categories, etc. -->
 <!--    contained in this file into your site. -->
 
-<!-- generator="WordPress/4.9.9" created="2025-08-18 16:26" -->
+<!-- generator="WordPress/4.9.9" created="2025-08-20 09:28" -->
 <rss version="2.0"
 	xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/"
 	xmlns:content="http://purl.org/rss/1.0/modules/content/"
@@ -29,7 +29,7 @@
 	<title>Pruebas CAU_CE</title>
 	<link>https://www3.gobiernodecanarias.org/medusa/mediateca/pruebas</link>
 	<description></description>
-	<pubDate>Mon, 18 Aug 2025 16:26:09 +0000</pubDate>
+	<pubDate>Wed, 20 Aug 2025 09:28:10 +0000</pubDate>
 	<language>es</language>
 	<wp:wxr_version>1.2</wp:wxr_version>
 	<wp:base_site_url>http://www3.gobiernodecanarias.org/medusa/mediateca/</wp:base_site_url>
