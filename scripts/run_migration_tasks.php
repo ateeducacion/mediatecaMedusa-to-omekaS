@@ -8,12 +8,12 @@
  * and additional information.
  *
  * Usage:
- *   php run_migration_tasks.php --input-file <input_file> --output-file <output_file> [--mark-completed] [--omeka-path <path>]
+ *   php run_migration_tasks.php --input-file <input_file> --output-file <output_file> [--delete-tasks] [--omeka-path <path>]
  *
  * Arguments:
  *   --input-file     Path to the input JSON file with migration tasks information
  *   --output-file    Path to the output JSON file to write the updated information
- *   --mark-completed Mark the original tasks as completed (optional)
+ *   --delete-tasks   Delete the original tasks after execution (optional)
  *   --omeka-path     Path to the Omeka S installation (default: /var/www/html)
  *
  * Author: [Your Name]
@@ -24,18 +24,18 @@
 define('SCRIPT_VERSION', '1.0.0');
 
 // Parse command line arguments
-$options = getopt('', ['input-file:', 'output-file:', 'mark-completed', 'omeka-path::']);
+$options = getopt('', ['input-file:', 'output-file:', 'delete-tasks', 'omeka-path::']);
 
 // Validate required arguments
 if (!isset($options['input-file']) || !isset($options['output-file'])) {
     echo "Error: Missing required arguments.\n";
-    echo "Usage: php run_migration_tasks.php --input-file <input_file> --output-file <output_file> [--mark-completed] [--omeka-path <path>]\n";
+    echo "Usage: php run_migration_tasks.php --input-file <input_file> --output-file <output_file> [--delete-tasks] [--omeka-path <path>]\n";
     exit(1);
 }
 
 $inputFile = $options['input-file'];
 $outputFile = $options['output-file'];
-$markCompleted = isset($options['mark-completed']);
+$deleteTasks = isset($options['delete-tasks']);
 $omekaPath = isset($options['omeka-path']) ? $options['omeka-path'] : '/var/www/html';
 
 // Validate input file
@@ -85,9 +85,18 @@ foreach ($migrationData as $index => &$channel) {
         // Add job ID to the task
         $task['job_id'] = $jobId;
         
-        // Mark the task as completed if requested
-        if ($markCompleted && $jobId) {
-            markTaskCompleted($taskId, $entityManager);
+        if ($jobId) {
+            // Get the new bulk import task created for this job
+            $newTaskId = getNewBulkImportTaskId($jobId, $entityManager);
+            if ($newTaskId) {
+                $task['new_task_id'] = $newTaskId;
+                echo "    New bulk import task ID: $newTaskId\n";
+            }
+            
+            // Delete the original task if requested
+            if ($deleteTasks) {
+                deleteTask($taskId, $entityManager);
+            }
         }
     }
     
@@ -164,13 +173,54 @@ function executeTask($taskId, $omekaPath) {
 }
 
 /**
- * Mark a bulk import task as completed.
+ * Get the new bulk import task ID created for a job.
+ *
+ * @param string $jobId The ID of the job
+ * @param EntityManager $entityManager The Doctrine entity manager
+ * @return int|null The new bulk import task ID if found, null otherwise
+ */
+function getNewBulkImportTaskId($jobId, $entityManager) {
+    try {
+        // Get the job entity
+        $job = $entityManager->find('Omeka\Entity\Job', $jobId);
+        
+        if (!$job) {
+            echo "    Error: Job not found: $jobId\n";
+            return null;
+        }
+        
+        // Query for bulk import tasks associated with this job
+        $qb = $entityManager->createQueryBuilder();
+        $qb->select('bi')
+           ->from('BulkImport\Entity\Import', 'bi')
+           ->where('bi.job = :job')
+           ->setParameter('job', $job);
+        
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+        
+        if (empty($result)) {
+            echo "    Warning: No new bulk import task found for job: $jobId\n";
+            return null;
+        }
+        
+        // Return the ID of the first bulk import task found
+        $newTask = reset($result);
+        return $newTask->getId();
+    } catch (Exception $e) {
+        echo "    Error getting new bulk import task ID: " . $e->getMessage() . "\n";
+        return null;
+    }
+}
+
+/**
+ * Delete a bulk import task.
  *
  * @param int $taskId The ID of the bulk import task
  * @param EntityManager $entityManager The Doctrine entity manager
  * @return bool True if successful, false otherwise
  */
-function markTaskCompleted($taskId, $entityManager) {
+function deleteTask($taskId, $entityManager) {
     try {
         // Get the bulk import entity
         $bulkImport = $entityManager->find('BulkImport\Entity\Import', $taskId);
@@ -180,14 +230,14 @@ function markTaskCompleted($taskId, $entityManager) {
             return false;
         }
         
-        // Update the status to completed
-        $bulkImport->setStatus('completed');
+        // Remove the entity
+        $entityManager->remove($bulkImport);
         $entityManager->flush();
         
-        echo "    Task marked as completed\n";
+        echo "    Task deleted\n";
         return true;
     } catch (Exception $e) {
-        echo "    Error marking task as completed: " . $e->getMessage() . "\n";
+        echo "    Error deleting task: " . $e->getMessage() . "\n";
         return false;
     }
 }
