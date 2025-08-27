@@ -339,12 +339,10 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
             $api->update('item_sets', $itemSetId, $itemSetData, [], ['isPartial' => true]);
             
             $addedCount++;
-            echo "    Added item set (ID: $itemSetId) to site and cleared dcterms:subject\n";
         }
         
         // Update the site with new item sets
         if ($addedCount > 0) {
-            echo json_encode($updatedSiteData);
             $api->update('sites', $siteId, $updatedSiteData, [], ['isPartial' => true]);
             echo "    Added $addedCount item sets to site (ID: $siteId)\n";
         }
