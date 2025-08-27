@@ -25,10 +25,11 @@ def parse_arguments():
     parser.add_argument('--config', default='migration_config.json', help='Path to migration configuration file (default: migration_config.json)')
     parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help='Set the logging level (default: INFO)')
-    parser.add_argument('--as-task', choices=['y', 'n'], default='n', 
-                        help='Save as task (y) or execute immediately (n). Default: n')
+    # --as-task parameter removed, behavior is now always as if --as-task=y
     parser.add_argument('--execute-tasks', type=str,
                         help='JSON string with bulk_import_ids to execute: \'{"bulk_import_id":[1,2,3]}\'')
+    parser.add_argument('--output-file', type=str,
+                        help='Path to the output JSON file with migration results')
     return parser.parse_args()
 
 def main():
@@ -37,11 +38,15 @@ def main():
     args = parse_arguments()
     
     # Build the command to run the main script
-    command = f"python main.py --csv {args.csv} --omeka-url {args.omeka_url} --key-identity {args.key_identity} --key-credential {args.key_credential} --wp-username {args.wp_username} --wp-password {args.wp_password} --config {args.config} --log-level {args.log_level} --as-task {args.as_task}"
+    command = f"python main.py --csv {args.csv} --omeka-url {args.omeka_url} --key-identity {args.key_identity} --key-credential {args.key_credential} --wp-username {args.wp_username} --wp-password {args.wp_password} --config {args.config} --log-level {args.log_level}"
     
     # Add execute-tasks parameter if provided
     if args.execute_tasks:
         command += f" --execute-tasks '{args.execute_tasks}'"
+    
+    # Add output-file parameter if provided
+    if args.output_file:
+        command += f" --output-file {args.output_file}"
     
     # Print the command
     print(f"Running command: {command}")

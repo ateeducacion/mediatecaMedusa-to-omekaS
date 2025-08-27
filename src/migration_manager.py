@@ -23,7 +23,7 @@ class MigrationManager:
                  key_identity: Optional[str] = None, key_credential: Optional[str] = None,
                  config_file: Optional[str] = None,
                  logger: Optional[logging.Logger] = None,
-                 as_task: bool = False):
+                 as_task: bool = True):  # Changed default to True
         """
         Initialize the migration manager.
         
@@ -122,7 +122,8 @@ class MigrationManager:
             'site': site,
             'user': user,
             'xml_file': xml_file,
-            'import_jobs': import_jobs
+            'import_jobs': import_jobs,
+            'importers': self.importers  # Include importers for reference
         }
         
         self.logger.info(f"Migration completed for channel: {channel['name']}")

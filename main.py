@@ -19,6 +19,7 @@ import sys
 from src.csv_reader import CSVReader
 from src.migration_manager import MigrationManager
 from src.logger import setup_logger
+from src.json_reporter import JSONReporter
 
 def parse_arguments():
     """Parse command line arguments."""
@@ -32,10 +33,11 @@ def parse_arguments():
     parser.add_argument('--config', help='Path to migration configuration file')
     parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help='Set the logging level')
-    parser.add_argument('--as-task', choices=['y', 'n'], default='n', 
-                        help='Save as task (y) or execute immediately (n). Default: n')
+    # --as-task parameter removed, behavior is now always as if --as-task=y
     parser.add_argument('--execute-tasks', type=str,
                         help='JSON string with bulk_import_ids to execute: \'{"bulk_import_id":[1,2,3]}\'')
+    parser.add_argument('--output-file', type=str,
+                        help='Path to the output JSON file with migration results')
     return parser.parse_args()
 
 def main():
@@ -57,7 +59,7 @@ def main():
             key_credential=args.key_credential,
             config_file=args.config,
             logger=logger,
-            as_task=(args.as_task == 'y')
+            as_task=True  # Always set as_task to True
         )
         
         # Handle execute-tasks mode
@@ -91,12 +93,23 @@ def main():
         channels = csv_reader.read_channels()
         logger.info(f"Found {len(channels)} channels to migrate")
         
+        # Initialize JSON reporter if output file is specified
+        json_reporter = None
+        if args.output_file:
+            logger.info(f"Initializing JSON reporter with output file: {args.output_file}")
+            json_reporter = JSONReporter(args.output_file, logger)
+        
         # Perform migration for each channel
         for channel in channels:
             logger.info(f"Migrating channel: {channel['name']}")
             result = migration_manager.migrate_channel(channel)
             if 'import_jobs' in result:
                 logger.info(f"Created {len(result['import_jobs'])} bulk import jobs for channel: {channel['name']}")
+            
+            # Add channel report to JSON file if reporter is initialized
+            if json_reporter:
+                logger.info(f"Adding report for channel: {channel['name']}")
+                json_reporter.add_channel_report(channel, result)
         
         logger.info("Migration process completed successfully")
         

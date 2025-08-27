@@ -80,6 +80,7 @@ Arguments:
 - `--log-level`: Set the logging level (default: INFO)
 - `--as-task`: Save as task (y) or execute immediately (n). Default: n
 - `--execute-tasks`: JSON string with bulk_import_ids to execute: `'{"bulk_import_id":[1,2,3]}'`
+- `--output-file`: Path to the output JSON file with migration results
 
 This script will:
 1. Check if the required packages are installed (and install them if needed)
@@ -136,6 +137,7 @@ Arguments:
 - `--log-level`: Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
 - `--as-task`: Save as task (y) or execute immediately (n). Default: n
 - `--execute-tasks`: JSON string with bulk_import_ids to execute: `'{"bulk_import_id":[1,2,3]}'`
+- `--output-file`: Path to the output JSON file with migration results
 
 You can also use the run_migration.py script for a simpler interface:
 
@@ -165,6 +167,7 @@ Arguments:
 - `--log-level`: Set the logging level (default: INFO)
 - `--as-task`: Save as task (y) or execute immediately (n). Default: n
 - `--execute-tasks`: JSON string with bulk_import_ids to execute: `'{"bulk_import_id":[1,2,3]}'`
+- `--output-file`: Path to the output JSON file with migration results
 
 You can also use the run_test_migration.py script for a simpler interface:
 
@@ -419,6 +422,77 @@ The following features have been implemented:
 - Creation of bulk import jobs in Omeka S
 - Task-based execution control with `--as-task` parameter
 - Selective task execution with `--execute-tasks` parameter
+- JSON reporting of migration results with `--output-file` parameter
 
-## Running task
-```sudo -u www-data php '/path/to/omeka/modules/EasyAdmin/data/scripts/task.php' --task 'BulkImport\Job\Import' --user-id 1 --server-url 'https://example.org' --base-path '/omeka-s' --args '{"bulk_import_id": 1}'```
+## JSON Report
+
+The tool can generate a JSON report of the migration process. This report includes information about each channel migrated from WordPress to Omeka S.
+
+### Usage
+
+To generate a JSON report, add the `--output-file` parameter to the migration command:
+
+```bash
+python main.py --csv <csv_file> --omeka-url <omeka_url> --wp-username <username> --wp-password <password> --key-identity <key_identity> --key-credential <key_credential> --config <config_file> --output-file <output_file>
+```
+
+### Report Format
+
+The output file is a JSON array where each element represents a migrated channel. Here's an example of the JSON structure:
+
+```json
+[
+  {
+    "name": "Channel Name",
+    "url": "https://example.com/channel",
+    "slug": "channel-name",
+    "editor": "editor_username",
+    "site_id": 123,
+    "user_id": 456,
+    "user_login": "editor_username",
+    "tasks_created": [
+      {
+        "importer": "Media Importer",
+        "id": 789
+      },
+      {
+        "importer": "Item Importer",
+        "id": 790
+      }
+    ],
+    "number_of_itemsets": 86,
+    "number_of_items": 12,
+    "number_of_media": 12
+  }
+]
+```
+
+### Incremental Updates
+
+The JSON reporter updates the output file after each channel is migrated. This ensures that if the migration process is interrupted, the information collected up to that point is preserved in the output file.
+
+For more details, see [README_json_reporter.md](README_json_reporter.md).
+
+## Running Tasks
+
+### Running Individual Tasks
+To run an individual bulk import task, you can use the EasyAdmin module's task.php script:
+
+```bash
+sudo -u www-data php '/path/to/omeka/modules/EasyAdmin/data/scripts/task.php' --task 'BulkImport\Job\Import' --user-id 1 --server-url 'https://example.org' --base-path '/omeka-s' --args '{"bulk_import_id": 1}'
+```
+
+### Running Multiple Tasks
+For running multiple bulk import tasks based on the JSON output file, a PHP script is provided:
+
+```bash
+php scripts/run_migration_tasks.php --input-file <input_file> --output-file <output_file> [--mark-completed] [--omeka-path <path>]
+```
+
+This script:
+1. Reads a JSON file with migration tasks information
+2. Executes each bulk import task
+3. Updates the JSON with job IDs and additional information
+4. Writes the updated information to an output file
+
+For more details, see [README_run_migration_tasks.md](scripts/README_run_migration_tasks.md).

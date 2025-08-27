@@ -82,7 +82,7 @@ echo "Processing $totalChannels channels...\n";
 foreach ($migrationData as $index => &$channel) {
     $channelName = $channel['name'];
     $siteId = $channel['site_id'];
-    echo "Processing channel ($index+1/$totalChannels): $channelName (Site ID: $siteId)\n";
+    echo "Processing channel (" . ($index+1) . "/$totalChannels): $channelName (Site ID: $siteId)\n";
     
     // Process each task in the channel
     foreach ($channel['tasks_created'] as &$task) {

@@ -29,10 +29,11 @@ def parse_arguments():
     parser.add_argument('--skip-tests', action='store_true', help='Skip running tests')
     parser.add_argument('--skip-coverage', action='store_true', help='Skip running coverage')
     parser.add_argument('--skip-docs', action='store_true', help='Skip generating documentation')
-    parser.add_argument('--as-task', choices=['y', 'n'], default='n', 
-                        help='Save as task (y) or execute immediately (n). Default: n')
+    # --as-task parameter removed, behavior is now always as if --as-task=y
     parser.add_argument('--execute-tasks', type=str,
                         help='JSON string with bulk_import_ids to execute: \'{"bulk_import_id":[1,2,3]}\'')
+    parser.add_argument('--output-file', type=str,
+                        help='Path to the output JSON file with migration results')
     return parser.parse_args()
 
 def run_command(command):
@@ -83,11 +84,15 @@ def main():
     
     # Run migration
     print("\nRunning migration...")
-    command = f"python main.py --csv {args.csv} --omeka-url {args.omeka_url} --key-identity {args.key_identity} --key-credential {args.key_credential} --wp-username {args.wp_username} --wp-password {args.wp_password} --config {args.config} --log-level {args.log_level} --as-task {args.as_task}"
+    command = f"python main.py --csv {args.csv} --omeka-url {args.omeka_url} --key-identity {args.key_identity} --key-credential {args.key_credential} --wp-username {args.wp_username} --wp-password {args.wp_password} --config {args.config} --log-level {args.log_level}"
     
     # Add execute-tasks parameter if provided
     if args.execute_tasks:
         command += f" --execute-tasks '{args.execute_tasks}'"
+    
+    # Add output-file parameter if provided
+    if args.output_file:
+        command += f" --output-file {args.output_file}"
     
     if run_command(command) != 0:
         print("Migration failed. Please check the error messages and try again.")

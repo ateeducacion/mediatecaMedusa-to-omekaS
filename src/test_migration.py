@@ -15,6 +15,7 @@ import sys
 import json
 from logger import get_test_logger
 from migration_manager import MigrationManager
+from json_reporter import JSONReporter
 
 def parse_arguments():
     """Parse command line arguments."""
@@ -31,10 +32,11 @@ def parse_arguments():
     parser.add_argument('--config', help='Path to migration configuration file')
     parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help='Set the logging level')
-    parser.add_argument('--as-task', choices=['y', 'n'], default='n', 
-                        help='Save as task (y) or execute immediately (n). Default: n')
+    # --as-task parameter removed, behavior is now always as if --as-task=y
     parser.add_argument('--execute-tasks', type=str,
                         help='JSON string with bulk_import_ids to execute: \'{"bulk_import_id":[1,2,3]}\'')
+    parser.add_argument('--output-file', type=str,
+                        help='Path to the output JSON file with migration results')
     return parser.parse_args()
 
 def main():
@@ -56,7 +58,7 @@ def main():
             key_credential=args.key_credential,
             config_file=args.config,
             logger=logger,
-            as_task=(args.as_task == 'y')
+            as_task=True  # Always set as_task to True
         )
         
         # Handle execute-tasks mode
@@ -103,6 +105,12 @@ def main():
         logger.info(f"Site ID: {results['site']['o:id']}")
         logger.info(f"User ID: {results['user']['o:id']}")
         logger.info(f"XML file: {results['xml_file']}")
+        
+        # Add channel report to JSON file if output file is specified
+        if args.output_file:
+            logger.info(f"Adding report for channel: {channel['name']} to {args.output_file}")
+            json_reporter = JSONReporter(args.output_file, logger)
+            json_reporter.add_channel_report(channel, results)
         
         # Test site creation
         logger.info("Testing site creation...")

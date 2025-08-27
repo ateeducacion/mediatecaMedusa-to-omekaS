@@ -251,7 +251,7 @@ class OmekaAdapter:
         
         # Update reader configuration with file information
         reader_config.update({
-            "filename": f"/tmp/{file_name}",
+            "filename": f"/var/www/html/files/preload/{file_name}",
             "file": {
                 "name": file_name,
                 "full_path": file_name,
@@ -274,7 +274,7 @@ class OmekaAdapter:
         import_config = {
             "@type": "o-bulk:Import",
             "o:job": None,
-            "o-bulk:comment": f"Import for site {site_name} using importer {importer_label}",
+            "o-bulk:comment": f"Site: {site_name},Importer: {importer_label}",
             "o:status": "ready",
             "o:undo_job": None,
             "o:importer": importer_id,
