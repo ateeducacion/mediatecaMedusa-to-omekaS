@@ -305,7 +305,6 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
         // Add item sets to the site
         $addedCount = 0;
         $updatedSiteData = [
-            'o:id' => $siteId,
             'o:site_item_set' => []
         ];
         
@@ -313,9 +312,7 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
         $position = 1;
         foreach ($currentItemSetIds as $itemSetId) {
             $updatedSiteData['o:site_item_set'][] = [
-                'o:item_set' => ['o:id' => $itemSetId],
-                'o:is_public' => true,
-                'o:position' => $position++
+                'o:item_set' => ['o:id' => $itemSetId]
             ];
         }
         
@@ -330,19 +327,16 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
             
             // Add to site
             $updatedSiteData['o:site_item_set'][] = [
-                'o:item_set' => ['o:id' => $itemSetId],
-                'o:is_public' => true,
-                'o:position' => $position++
+                'o:item_set' => ['o:id' => $itemSetId]
             ];
             
             // Clear dcterms:subject field
             $itemSetData = [
-                'o:id' => $itemSetId,
                 'dcterms:subject' => []
             ];
             
             // Update the item set
-            $api->update('item_sets', $itemSetId, $itemSetData, ['isPartial' => true]);
+            $api->update('item_sets', $itemSetId, $itemSetData, $options = ['isPartial' => true]);
             
             $addedCount++;
             echo "    Added item set (ID: $itemSetId) to site and cleared dcterms:subject\n";
@@ -351,7 +345,7 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
         // Update the site with new item sets
         if ($addedCount > 0) {
             echo json_encode($updatedSiteData);
-            $api->update('sites', $siteId, $updatedSiteData, ['isPartial' => true]);
+            $api->update('sites', $siteId, $updatedSiteData, $options = ['isPartial' => true]);
             echo "    Added $addedCount item sets to site (ID: $siteId)\n";
         }
         
