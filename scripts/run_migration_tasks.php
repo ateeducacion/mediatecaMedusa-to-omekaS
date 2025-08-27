@@ -350,7 +350,7 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
         
         // Update the site with new item sets
         if ($addedCount > 0) {
-            echo $updatedSiteData;
+            echo json_encode($updatedSiteData);
             $api->update('sites', $siteId, $updatedSiteData, ['isPartial' => true]);
             echo "    Added $addedCount item sets to site (ID: $siteId)\n";
         }
