@@ -325,7 +325,6 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
             
             // Clear dcterms:subject field
             $itemSetData = [
-                'o:id' => $itemSetId,
                 'dcterms:subject' => []
             ];
             
