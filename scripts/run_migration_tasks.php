@@ -64,6 +64,17 @@ $serviceLocator = $application->getServiceManager();
 $entityManager = $serviceLocator->get('Omeka\EntityManager');
 $api = $serviceLocator->get('Omeka\ApiManager');
 
+// Get the authentication service and set the admin user (ID 1) for API operations
+$auth = $serviceLocator->get('Omeka\AuthenticationService');
+$userAdapter = $serviceLocator->get('Omeka\ApiAdapterManager')->get('users');
+$adminUser = $entityManager->find('Omeka\Entity\User', 1); // Admin user (ID 1)
+if ($adminUser) {
+    $auth->getStorage()->write($adminUser);
+    echo "Using admin user for API operations\n";
+} else {
+    echo "Warning: Admin user not found. Some operations may fail due to permission issues.\n";
+}
+
 // Process each channel in the migration data
 $totalChannels = count($migrationData);
 echo "Processing $totalChannels channels...\n";
@@ -247,6 +258,7 @@ function deleteTask($taskId, $entityManager) {
 
 /**
  * Add item sets with matching dcterms:subject to the site and clear the subject field.
+ * Uses the API with admin user permissions.
  *
  * @param int $siteId The ID of the site
  * @param ApiManager $api The Omeka API manager
@@ -255,7 +267,7 @@ function deleteTask($taskId, $entityManager) {
  */
 function addItemSetsToSite($siteId, $api, $entityManager) {
     try {
-        echo "    Adding item sets to site (ID: $siteId)...\n";
+        echo "    Adding item sets to site (ID: $siteId) using API with admin user...\n";
         
         // Get the site
         $site = $api->read('sites', $siteId)->getContent();
@@ -325,6 +337,7 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
             
             // Clear dcterms:subject field
             $itemSetData = [
+                'o:id' => $itemSetId,
                 'dcterms:subject' => []
             ];
             
