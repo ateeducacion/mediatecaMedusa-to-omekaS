@@ -111,15 +111,16 @@ foreach ($migrationData as $index => &$channel) {
         }
     }
     
+
+    // Add item sets with matching dcterms:subject to the site
+    addItemSetsToSite($siteId, $api, $entityManager);
+
     // Get item sets and items count for the site
     $counts = getItemCounts($siteId, $api);
     
     // Add counts to the channel data
     $channel['omeka_itemsets_count'] = $counts['itemSetsCount'];
     $channel['omeka_items_count'] = $counts['itemsCount'];
-    
-    // Add item sets with matching dcterms:subject to the site
-    addItemSetsToSite($siteId, $api, $entityManager);
 }
 
 // Write updated JSON to output file
