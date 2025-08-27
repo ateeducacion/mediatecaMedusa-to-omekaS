@@ -106,6 +106,9 @@ foreach ($migrationData as $index => &$channel) {
     // Add counts to the channel data
     $channel['omeka_itemsets_count'] = $counts['itemSetsCount'];
     $channel['omeka_items_count'] = $counts['itemsCount'];
+    
+    // Add item sets with matching dcterms:subject to the site
+    addItemSetsToSite($siteId, $api, $entityManager);
 }
 
 // Write updated JSON to output file
@@ -239,6 +242,110 @@ function deleteTask($taskId, $entityManager) {
     } catch (Exception $e) {
         echo "    Error deleting task: " . $e->getMessage() . "\n";
         return false;
+    }
+}
+
+/**
+ * Add item sets with matching dcterms:subject to the site and clear the subject field.
+ *
+ * @param int $siteId The ID of the site
+ * @param ApiManager $api The Omeka API manager
+ * @param EntityManager $entityManager The Doctrine entity manager
+ * @return int Number of item sets added to the site
+ */
+function addItemSetsToSite($siteId, $api, $entityManager) {
+    try {
+        echo "    Adding item sets to site (ID: $siteId)...\n";
+        
+        // Get the site
+        $site = $api->read('sites', $siteId)->getContent();
+        if (!$site) {
+            echo "    Error: Site not found: $siteId\n";
+            return 0;
+        }
+        
+        // Get current site item sets
+        $siteItemSets = $site->siteItemSets();
+        $currentItemSetIds = [];
+        foreach ($siteItemSets as $siteItemSet) {
+            $currentItemSetIds[] = $siteItemSet->itemSet()->id();
+        }
+        
+        // Find item sets with dcterms:subject matching the site ID
+        $query = [
+            'property' => [
+                [
+                    'property' => 'dcterms:subject',
+                    'type' => 'eq',
+                    'text' => (string)$siteId
+                ]
+            ]
+        ];
+        
+        $response = $api->search('item_sets', $query);
+        $itemSets = $response->getContent();
+        
+        if (empty($itemSets)) {
+            echo "    No item sets found with dcterms:subject matching site ID: $siteId\n";
+            return 0;
+        }
+        
+        // Add item sets to the site
+        $addedCount = 0;
+        $updatedSiteData = [
+            'o:id' => $siteId,
+            'o:site_item_set' => []
+        ];
+        
+        // Add existing site item sets
+        $position = 1;
+        foreach ($currentItemSetIds as $itemSetId) {
+            $updatedSiteData['o:site_item_set'][] = [
+                'o:item_set' => ['o:id' => $itemSetId],
+                'o:is_public' => true,
+                'o:position' => $position++
+            ];
+        }
+        
+        // Add new item sets
+        foreach ($itemSets as $itemSet) {
+            $itemSetId = $itemSet->id();
+            
+            // Skip if already in the site
+            if (in_array($itemSetId, $currentItemSetIds)) {
+                continue;
+            }
+            
+            // Add to site
+            $updatedSiteData['o:site_item_set'][] = [
+                'o:item_set' => ['o:id' => $itemSetId],
+                'o:is_public' => true,
+                'o:position' => $position++
+            ];
+            
+            // Clear dcterms:subject field
+            $itemSetData = [
+                'o:id' => $itemSetId,
+                'dcterms:subject' => []
+            ];
+            
+            // Update the item set
+            $api->update('item_sets', $itemSetId, $itemSetData);
+            
+            $addedCount++;
+            echo "    Added item set (ID: $itemSetId) to site and cleared dcterms:subject\n";
+        }
+        
+        // Update the site with new item sets
+        if ($addedCount > 0) {
+            $api->update('sites', $siteId, $updatedSiteData);
+            echo "    Added $addedCount item sets to site (ID: $siteId)\n";
+        }
+        
+        return $addedCount;
+    } catch (Exception $e) {
+        echo "    Error adding item sets to site: " . $e->getMessage() . "\n";
+        return 0;
     }
 }
 
