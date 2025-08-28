@@ -66,7 +66,7 @@ python install_requirements.py --user
 The easiest way to get started is to use the quick start script:
 
 ```
-python quick_start.py --omeka-url <omeka_url> --key-identity <key_identity> --key-credential <key_credential> --wp-username <username> --wp-password <password> --channel-url <url>
+python quick_start.py --omeka-url <omeka_url> --key-identity <key_identity> --key-credential <key_credential> --wp-username <username> --wp-password <password> --channel-url <url> --output-file <output_file>
 ```
 
 Arguments:
@@ -78,21 +78,15 @@ Arguments:
 - `--channel-url`: URL of the channel
 - `--config`: Path to migration configuration file (default: migration_config.json)
 - `--log-level`: Set the logging level (default: INFO)
-- `--as-task`: Save as task (y) or execute immediately (n). Default: n
 - `--execute-tasks`: JSON string with bulk_import_ids to execute: `'{"bulk_import_id":[1,2,3]}'`
 - `--output-file`: Path to the output JSON file with migration results
-
-This script will:
-1. Check if the required packages are installed (and install them if needed)
-2. Create the necessary directories
-3. Run a test migration for a single channel
 
 ### Run All
 
 You can also run all the scripts in the correct order:
 
 ```
-python run_all.py --omeka-url <omeka_url> --key-identity <key_identity> --key-credential <key_credential> --wp-username <username> --wp-password <password>
+python run_all.py --omeka-url <omeka_url> --key-identity <key_identity> --key-credential <key_credential> --wp-username <username> --wp-password <password> --output-file <output_file>
 ```
 
 Arguments:
@@ -107,8 +101,8 @@ Arguments:
 - `--skip-tests`: Skip running tests
 - `--skip-coverage`: Skip running coverage
 - `--skip-docs`: Skip generating documentation
-- `--as-task`: Save as task (y) or execute immediately (n). Default: n
 - `--execute-tasks`: JSON string with bulk_import_ids to execute: `'{"bulk_import_id":[1,2,3]}'`
+- `--output-file`: Path to the output JSON file with migration results
 
 This script will:
 1. Check if the required packages are installed (and install them if needed)
@@ -135,7 +129,6 @@ Arguments:
 - `--wp-password`: WordPress password
 - `--config`: Path to migration configuration file
 - `--log-level`: Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-- `--as-task`: Save as task (y) or execute immediately (n). Default: n
 - `--execute-tasks`: JSON string with bulk_import_ids to execute: `'{"bulk_import_id":[1,2,3]}'`
 - `--output-file`: Path to the output JSON file with migration results
 
@@ -165,7 +158,6 @@ Arguments:
 - `--channel-editor`: Username of the editor
 - `--config`: Path to migration configuration file
 - `--log-level`: Set the logging level (default: INFO)
-- `--as-task`: Save as task (y) or execute immediately (n). Default: n
 - `--execute-tasks`: JSON string with bulk_import_ids to execute: `'{"bulk_import_id":[1,2,3]}'`
 - `--output-file`: Path to the output JSON file with migration results
 
@@ -347,152 +339,3 @@ This approach ensures that:
 - Import jobs are created for each channel during its migration
 - Each import job is properly configured with the correct XML file, site name, and owner ID
 
-## New Parameters
-
-### --as-task Parameter
-
-The `--as-task` parameter controls how bulk import jobs are handled:
-
-- **`--as-task n`** (default): Bulk import jobs are executed immediately by Omeka S
-  - The `as_task` parameter in the configuration is set to "0"
-  - Omeka S starts the migration process immediately when the bulk import job is created
-  - Suitable for smaller migrations or when you want immediate processing
-
-- **`--as-task y`**: Bulk import jobs are saved as tasks for later execution
-  - The `as_task` parameter in the configuration is set to "1"
-  - Omeka S saves the bulk import as a task that can be executed later using command line tools
-  - Suitable for larger migrations or when you want to control when the processing happens
-
-Example usage:
-```bash
-# Execute immediately (default)
-python main.py --csv channels.csv --omeka-url https://example.com/api --key-identity key --key-credential cred --wp-username user --wp-password pass --as-task n
-
-# Save as tasks for later execution
-python main.py --csv channels.csv --omeka-url https://example.com/api --key-identity key --key-credential cred --wp-username user --wp-password pass --as-task y
-```
-
-### --execute-tasks Parameter
-
-The `--execute-tasks` parameter allows you to execute previously created bulk import tasks:
-
-- **Format**: JSON string with the format `'{"bulk_import_id":[1,2,3]}'`
-- **Behavior**: When this parameter is provided, the program skips the normal migration process (creating sites, users, exporters, etc.) and only executes the specified tasks
-- **Execution**: Uses the PHP command line tool to execute each task: 
-  ```bash
-  php '/var/www/html/modules/EasyAdmin/data/scripts/task.php' --task 'BulkImport\Job\Import' --user-id 1 --args '{"bulk_import_id": TASK_ID}'
-  ```
-
-Example usage:
-```bash
-# Execute specific bulk import tasks
-python main.py --csv channels.csv --omeka-url https://example.com/api --key-identity key --key-credential cred --wp-username user --wp-password pass --execute-tasks '{"bulk_import_id":[505,506,507]}'
-```
-
-### Workflow Examples
-
-#### Two-Step Migration Process
-
-1. **Step 1**: Create migration structure and save as tasks
-   ```bash
-   python main.py --csv channels.csv --omeka-url https://example.com/api --key-identity key --key-credential cred --wp-username user --wp-password pass --as-task y
-   ```
-   This creates sites, users, exports data, and creates bulk import jobs saved as tasks.
-
-2. **Step 2**: Execute the tasks when ready
-   ```bash
-   python main.py --csv channels.csv --omeka-url https://example.com/api --key-identity key --key-credential cred --wp-username user --wp-password pass --execute-tasks '{"bulk_import_id":[1,2,3,4,5]}'
-   ```
-   This executes the previously created tasks.
-
-#### Single-Step Migration Process
-
-```bash
-python main.py --csv channels.csv --omeka-url https://example.com/api --key-identity key --key-credential cred --wp-username user --wp-password pass --as-task n
-```
-This creates the complete migration structure and executes the bulk imports immediately.
-
-## Implemented Features
-
-The following features have been implemented:
-- Migration of WordPress channels to Omeka S sites
-- Creation of users and assignment to sites
-- Export of WordPress data to XML
-- Creation of bulk importers in Omeka S
-- Creation of bulk import jobs in Omeka S
-- Task-based execution control with `--as-task` parameter
-- Selective task execution with `--execute-tasks` parameter
-- JSON reporting of migration results with `--output-file` parameter
-
-## JSON Report
-
-The tool can generate a JSON report of the migration process. This report includes information about each channel migrated from WordPress to Omeka S.
-
-### Usage
-
-To generate a JSON report, add the `--output-file` parameter to the migration command:
-
-```bash
-python main.py --csv <csv_file> --omeka-url <omeka_url> --wp-username <username> --wp-password <password> --key-identity <key_identity> --key-credential <key_credential> --config <config_file> --output-file <output_file>
-```
-
-### Report Format
-
-The output file is a JSON array where each element represents a migrated channel. Here's an example of the JSON structure:
-
-```json
-[
-  {
-    "name": "Channel Name",
-    "url": "https://example.com/channel",
-    "slug": "channel-name",
-    "editor": "editor_username",
-    "site_id": 123,
-    "user_id": 456,
-    "user_login": "editor_username",
-    "tasks_created": [
-      {
-        "importer": "Media Importer",
-        "id": 789
-      },
-      {
-        "importer": "Item Importer",
-        "id": 790
-      }
-    ],
-    "number_of_itemsets": 86,
-    "number_of_items": 12,
-    "number_of_media": 12
-  }
-]
-```
-
-### Incremental Updates
-
-The JSON reporter updates the output file after each channel is migrated. This ensures that if the migration process is interrupted, the information collected up to that point is preserved in the output file.
-
-For more details, see [README_json_reporter.md](README_json_reporter.md).
-
-## Running Tasks
-
-### Running Individual Tasks
-To run an individual bulk import task, you can use the EasyAdmin module's task.php script:
-
-```bash
-sudo -u www-data php '/path/to/omeka/modules/EasyAdmin/data/scripts/task.php' --task 'BulkImport\Job\Import' --user-id 1 --server-url 'https://example.org' --base-path '/omeka-s' --args '{"bulk_import_id": 1}'
-```
-
-### Running Multiple Tasks
-For running multiple bulk import tasks based on the JSON output file, a PHP script is provided:
-
-```bash
-php scripts/run_migration_tasks.php --input-file <input_file> --output-file <output_file> [--mark-completed] [--omeka-path <path>]
-```
-
-This script:
-1. Reads a JSON file with migration tasks information
-2. Executes each bulk import task
-3. Updates the JSON with job IDs and additional information
-4. Writes the updated information to an output file
-
-For more details, see [README_run_migration_tasks.md](scripts/README_run_migration_tasks.md).
