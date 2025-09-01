@@ -28,9 +28,6 @@ def parse_arguments():
     parser.add_argument('--config', default='migration_config.json', help='Path to migration configuration file (default: migration_config.json)')
     parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help='Set the logging level')
-    # --as-task parameter removed, behavior is now always as if --as-task=y
-    parser.add_argument('--execute-tasks', type=str,
-                        help='JSON string with bulk_import_ids to execute: \'{"bulk_import_id":[1,2,3]}\'')
     parser.add_argument('--output-file', type=str,
                         help='Path to the output JSON file with migration results')
     return parser.parse_args()
@@ -48,12 +45,6 @@ def main():
         command += f" --channel-slug {args.channel_slug}"
     
     command += f" --channel-editor {args.channel_editor}"
-    
-    # Add execute-tasks parameter if provided
-    if args.execute_tasks:
-        # Ensure proper JSON escaping for command line
-        escaped_tasks = args.execute_tasks.replace('"', '\\"')
-        command += f" --execute-tasks \"{escaped_tasks}\""
     
     # Add output-file parameter if provided
     if args.output_file:

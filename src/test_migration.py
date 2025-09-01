@@ -9,10 +9,6 @@ Author: [Your Name]
 Date: 23-07-2025
 """
 
-import argparse
-import logging
-import sys
-import json
 from logger import get_test_logger
 from migration_manager import MigrationManager
 from json_reporter import JSONReporter
@@ -24,7 +20,6 @@ def parse_arguments():
     parser.add_argument('--key-identity', required=True, help='Omeka S API key identity')
     parser.add_argument('--key-credential', required=True, help='Omeka S API key credential')
     parser.add_argument('--wp-username', required=True, help='WordPress username')
-    parser.add_argument('--wp-password', required=True, help='WordPress password')
     parser.add_argument('--channel-name', required=True, help='Name of the channel')
     parser.add_argument('--channel-url', required=True, help='URL of the channel')
     parser.add_argument('--channel-slug', help='Slug of the channel (optional, will be generated from name if not provided)')
@@ -32,9 +27,6 @@ def parse_arguments():
     parser.add_argument('--config', help='Path to migration configuration file')
     parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help='Set the logging level')
-    # --as-task parameter removed, behavior is now always as if --as-task=y
-    parser.add_argument('--execute-tasks', type=str,
-                        help='JSON string with bulk_import_ids to execute: \'{"bulk_import_id":[1,2,3]}\'')
     parser.add_argument('--output-file', type=str,
                         help='Path to the output JSON file with migration results')
     return parser.parse_args()
@@ -50,41 +42,18 @@ def main():
     
     try:
         # Create migration manager
+        password = getpass.getpass("Password: ")
+        
         migration_manager = MigrationManager(
             omeka_url=args.omeka_url,
             wp_username=args.wp_username,
-            wp_password=args.wp_password,
+            wp_password=password,
             key_identity=args.key_identity,
             key_credential=args.key_credential,
             config_file=args.config,
             logger=logger,
             as_task=True  # Always set as_task to True
         )
-        
-        # Handle execute-tasks mode
-        if args.execute_tasks:
-            try:
-                print(args.execute_tasks)
-                tasks_data = json.loads(args.execute_tasks)
-                bulk_import_ids = tasks_data.get('bulk_import_id', [])
-                logger.info(f"Executing {len(bulk_import_ids)} bulk import tasks")
-                
-                results = migration_manager.execute_bulk_import_tasks(bulk_import_ids)
-                for result in results:
-                    if result['success']:
-                        logger.info(f"Task {result['bulk_import_id']} executed successfully")
-                    else:
-                        logger.error(f"Task {result['bulk_import_id']} failed: {result['error']}")
-                
-                logger.info("Task execution completed")
-                return
-                
-            except json.JSONDecodeError as e:
-                logger.error(f"Invalid JSON format for --execute-tasks: {str(e)}")
-                sys.exit(1)
-            except Exception as e:
-                logger.error(f"Error executing tasks: {str(e)}")
-                sys.exit(1)
         
         # Normal migration process
         # Create channel data

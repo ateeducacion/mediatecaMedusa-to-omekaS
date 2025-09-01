@@ -15,21 +15,35 @@ This tool automates the migration of WordPress sites to Omeka S. It reads a CSV 
 
 ## Project Structure
 
-```
-src/
-├── Omeka/                  # Omeka S related modules
-│   ├── OmekaAdapter.py     # Module to interact with Omeka S API
-│   └── UserAdapter.py      # Module to handle user operations (to be implemented)
-├── WordPress/              # WordPress related modules
-│   └── WordPressExporter.py # Module to export WordPress data
-├── CAS_login.py            # Module for CAS authentication
-├── csv_reader.py           # Module to read channel information from CSV
-├── logger.py               # Module for logging
-├── main.py                 # Main entry point
-├── migration_manager.py    # Module to manage the migration process
-├── Migration_process.py    # Original migration process (for reference)
-└── test_migration.py       # Module to test the migration process
-```
+- src/ (core Python modules)
+  - Omeka/ (Omeka S related modules)
+    - OmekaAdapter.py     # Module to interact with Omeka S API
+    - UserAdapter.py      # Module to handle user operations
+  - WordPress/              # WordPress related modules
+    - WordPressExporter.py # Module to export WordPress data
+  - common/
+    - CAS_login.py            # Module for CAS authentication
+  - csv_reader.py           # Module to read channel information from CSV
+  - logger.py               # Module for logging
+  
+  - migration_manager.py    # Module to manage the migration process
+  - Migration_process.py    # Original migration process (for reference)
+  - test_migration.py       # Module to test the migration process
+- setup_project.py            # Project bootstrap tooling
+- exports/                  #Downloaded XML files from channels
+- README_download_channels.md  # Documentation
+- README_json_reporter.md      # Documentation
+- README.md                    # This file
+- main.py                      # Present at root (entry point for some workflows)
+- quick_start.py               # Quick start helper
+- run_all.py                   # Run all scripts in sequence
+- run_migration.py             # Migration runner
+- run_test_migration.py        # Test migration runner
+- run_tests.py                 # Test runner
+- run_coverage.py              # Coverage runner
+- docs/                        # Documentation sources
+- tests/                       # Unit tests
+- migration_config.json        # Migration configuration
 
 ## Requirements
 
@@ -78,7 +92,6 @@ Arguments:
 - `--channel-url`: URL of the channel
 - `--config`: Path to migration configuration file (default: migration_config.json)
 - `--log-level`: Set the logging level (default: INFO)
-- `--execute-tasks`: JSON string with bulk_import_ids to execute: `'{"bulk_import_id":[1,2,3]}'`
 - `--output-file`: Path to the output JSON file with migration results
 
 ### Run All
@@ -101,7 +114,6 @@ Arguments:
 - `--skip-tests`: Skip running tests
 - `--skip-coverage`: Skip running coverage
 - `--skip-docs`: Skip generating documentation
-- `--execute-tasks`: JSON string with bulk_import_ids to execute: `'{"bulk_import_id":[1,2,3]}'`
 - `--output-file`: Path to the output JSON file with migration results
 
 This script will:
@@ -129,7 +141,6 @@ Arguments:
 - `--wp-password`: WordPress password
 - `--config`: Path to migration configuration file
 - `--log-level`: Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-- `--execute-tasks`: JSON string with bulk_import_ids to execute: `'{"bulk_import_id":[1,2,3]}'`
 - `--output-file`: Path to the output JSON file with migration results
 
 You can also use the run_migration.py script for a simpler interface:
@@ -158,7 +169,6 @@ Arguments:
 - `--channel-editor`: Username of the editor
 - `--config`: Path to migration configuration file
 - `--log-level`: Set the logging level (default: INFO)
-- `--execute-tasks`: JSON string with bulk_import_ids to execute: `'{"bulk_import_id":[1,2,3]}'`
 - `--output-file`: Path to the output JSON file with migration results
 
 You can also use the run_test_migration.py script for a simpler interface:
@@ -338,4 +348,3 @@ This approach ensures that:
 - Importers are created only once, not once per site
 - Import jobs are created for each channel during its migration
 - Each import job is properly configured with the correct XML file, site name, and owner ID
-

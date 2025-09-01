@@ -22,7 +22,7 @@ No additional installation is required. The script uses modules that are already
 ## Usage
 
 ```bash
-python download_channels.py --username USERNAME --password PASSWORD [--start CHANNEL_NUMBER]
+python download_channels.py --username user@example.com --output-dir my_exports
 ```
 
 ### Parameters

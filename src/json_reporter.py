@@ -52,15 +52,33 @@ class JSONReporter:
             with open(xml_file, 'r', encoding='utf-8') as f:
                 xml_text = f.read()
             
-            # Count occurrences of specific tags
-            item_count = len(re.findall(r'<item\b', xml_text, flags=re.IGNORECASE))
-            media_category_count = len(re.findall(r"<wp:term_taxonomy\b[^>]*>\s*<!\[CDATA\[media-category\]\]>\s*</wp:term_taxonomy\s*>", xml_text, flags=re.IGNORECASE | re.DOTALL))
-            root_items_count = len(re.findall(r"<wp:post_parent\b[^>]*>\s*0\s*</wp:post_parent>", xml_text, flags=re.IGNORECASE))
+            attachment_root_items = 0
+            attachment_items = 0
+            
+            # Find all <item> blocks
+            item_pattern = r'<item\b[^>]*>.*?</item>'
+            item_blocks = re.findall(item_pattern, xml_text, flags=re.IGNORECASE | re.DOTALL)
+            
+            for item_block in item_blocks:
+                # Check if this item has wp:post_type with attachment (handle CDATA)
+                post_type_pattern = r'<wp:post_type\b[^>]*>\s*(?:<!\[CDATA\[)?\s*attachment\s*(?:\]\]>)?\s*</wp:post_type>'
+                if re.search(post_type_pattern, item_block, flags=re.IGNORECASE):
+                    attachment_items += 1
+                    
+                    # Also check if wp:post_parent=0 (no CDATA for numbers)
+                    post_parent_pattern = r'<wp:post_parent\b[^>]*>\s*0\s*</wp:post_parent>'
+                    if re.search(post_parent_pattern, item_block, flags=re.IGNORECASE):
+                        attachment_root_items += 1
+            
+            # Count wp:term_taxonomy with media-category (exact CDATA format)
+            media_category_pattern = r'<wp:term_taxonomy\b[^>]*>\s*<!\[CDATA\[media-category\]\]>\s*</wp:term_taxonomy>'
+            media_category_matches = re.findall(media_category_pattern, xml_text, flags=re.IGNORECASE | re.DOTALL)
+            media_category_terms = len(media_category_matches)
             
             return {
-                'number_of_itemsets': media_category_count,
-                'number_of_items': root_items_count,
-                'number_of_media': item_count
+                'number_of_itemsets': media_category_terms,
+                'number_of_items': attachment_root_items,
+                'number_of_media': attachment_items
             }
         except Exception as e:
             self.logger.error(f"Error counting XML tags in {xml_file}: {str(e)}")

@@ -2,8 +2,7 @@
 """
 count_xml_tags.py
 
-Reads a CSV file listing URLs (XML feeds) and counts
-the number of <item> tags and <wp:category> tags in each retrieved XML document.
+Reads a CSV file listing URLs (XML feeds) and counts specific XML elements in each retrieved XML document.
 
 Updated behavior:
 - If you provide --xml-dir, the script will read XML content from files located in that directory.
@@ -11,12 +10,13 @@ Updated behavior:
   For example, URL "http://example.com/path/to/file.xml" will map to "<xml-dir>/file.xml".
 - If --xml-dir is not provided, the script keeps the original behavior and fetches the XML from the given URL.
 
-Additional counts:
-- categories_2: number of <wp:term_taxonomy><![CDATA[media-category]]></wp:term_taxonomy> occurrences
-- root_items: number of <wp:post_parent>0</wp:post_parent> occurrences
+Counts performed:
+- attachment_root_items: number of <item> elements with <wp:post_type>=attachment and <wp:post_parent>=0
+- attachment_items: number of <item> elements with <wp:post_type>=attachment
+- media_category_terms: number of <wp:term_taxonomy><![CDATA[media-category]]></wp:term_taxonomy> occurrences
 
 Output:
-- A CSV file with columns: numero, nombre, url, item_count, wp_category_count, categories_2, root_items, error (empty if no error)
+- A CSV file with columns: numero, nombre, url, attachment_root_items, attachment_items, media_category_terms, error (empty if no error)
 
 Usage:
 - python3 scripts/count_xml_tags.py
@@ -111,17 +111,38 @@ def extract_filename_from_url(url: str) -> str:
 def count_tags(xml_text: str) -> tuple:
     """
     Count occurrences of:
-    - <item ...> tags
-    - <wp:category ...> tags
-    - <wp:term_taxonomy><![CDATA[media-category]]> occurrences (categories_2)
-    - <wp:post_parent>0</wp:post_parent> occurrences (root_items)
+    - <item ...> tags with <wp:post_type>=attachment and <wp:post_parent>=0 (attachment_root_items)
+    - <item ...> tags with <wp:post_type>=attachment (attachment_items)
+    - <wp:term_taxonomy><![CDATA[media-category]]></wp:term_taxonomy> occurrences (media_category_terms)
     The counts are performed on the raw XML string to avoid namespace parsing issues.
     """
-    item_matches = re.findall(r'<item\b', xml_text, flags=re.IGNORECASE)
-    wp_cat_matches = re.findall(r'<wp:category\b', xml_text, flags=re.IGNORECASE)
-    cat2_matches = re.findall(r"<wp:term_taxonomy\b[^>]*>\s*<!\[CDATA\[media-category\]\]>\s*</wp:term_taxonomy\s*>", xml_text, flags=re.IGNORECASE | re.DOTALL)
-    root_matches = re.findall(r"<wp:post_parent\b[^>]*>\s*0\s*</wp:post_parent>", xml_text, flags=re.IGNORECASE)
-    return len(item_matches), len(wp_cat_matches), len(cat2_matches), len(root_matches)
+    
+    # Count items with wp:post_type=attachment and wp:post_parent=0
+    # We need to find <item> blocks that contain both conditions
+    attachment_root_items = 0
+    attachment_items = 0
+    
+    # Find all <item> blocks
+    item_pattern = r'<item\b[^>]*>.*?</item>'
+    item_blocks = re.findall(item_pattern, xml_text, flags=re.IGNORECASE | re.DOTALL)
+    
+    for item_block in item_blocks:
+        # Check if this item has wp:post_type with attachment (handle CDATA)
+        post_type_pattern = r'<wp:post_type\b[^>]*>\s*(?:<!\[CDATA\[)?\s*attachment\s*(?:\]\]>)?\s*</wp:post_type>'
+        if re.search(post_type_pattern, item_block, flags=re.IGNORECASE):
+            attachment_items += 1
+            
+            # Also check if wp:post_parent=0 (no CDATA for numbers)
+            post_parent_pattern = r'<wp:post_parent\b[^>]*>\s*0\s*</wp:post_parent>'
+            if re.search(post_parent_pattern, item_block, flags=re.IGNORECASE):
+                attachment_root_items += 1
+    
+    # Count wp:term_taxonomy with media-category (exact CDATA format)
+    media_category_pattern = r'<wp:term_taxonomy\b[^>]*>\s*<!\[CDATA\[media-category\]\]>\s*</wp:term_taxonomy>'
+    media_category_matches = re.findall(media_category_pattern, xml_text, flags=re.IGNORECASE | re.DOTALL)
+    media_category_terms = len(media_category_matches)
+    
+    return attachment_root_items, attachment_items, media_category_terms
 
 def main():
     parser = argparse.ArgumentParser(
@@ -163,7 +184,7 @@ def main():
             # Prepare to write output
         with open(input_csv, newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f)
-            fieldnames = ["numero", "nombre", "url", "item_count", "wp_category_count", "categories_2", "root_items", "error"]
+            fieldnames = ["numero", "nombre", "url", "attachment_root_items", "attachment_items", "media_category_terms", "error"]
 
             with open(output_csv, "w", newline="", encoding="utf-8") as out_f:
                 writer = csv.DictWriter(out_f, fieldnames=fieldnames)
@@ -184,18 +205,16 @@ def main():
                             "numero": line_num,
                             "nombre": nombre_val,
                             "url": "",
-                            "item_count": "",
-                            "wp_category_count": "",
-                            "categories_2": "",
-                            "root_items": "",
+                            "attachment_root_items": "",
+                            "attachment_items": "",
+                            "media_category_terms": "",
                             "error": "missing_url"
                         })
                         continue
 
-                    item_count = 0
-                    wp_count = 0
-                    categories_2 = 0
-                    root_items = 0
+                    attachment_root_items = 0
+                    attachment_items = 0
+                    media_category_terms = 0
                     error = ""
 
                     try:
@@ -231,7 +250,7 @@ def main():
                             xml_text = read_xml_from_dir(resolved, xml_dir)
                         else:
                             xml_text = fetch_xml(url, timeout=timeout, session=session)
-                        item_count, wp_count, categories_2, root_items = count_tags(xml_text)
+                        attachment_root_items, attachment_items, media_category_terms = count_tags(xml_text)
                         success += 1
                     except FileNotFoundError as e:
                         error = f"file_not_found:{str(e)}"
@@ -242,10 +261,9 @@ def main():
                         "numero": line_num,
                         "nombre": nombre_val,
                         "url": url,
-                        "item_count": item_count,
-                        "wp_category_count": wp_count,
-                        "categories_2": categories_2,
-                        "root_items": root_items,
+                        "attachment_root_items": attachment_root_items,
+                        "attachment_items": attachment_items,
+                        "media_category_terms": media_category_terms,
                         "error": error
                     })
 

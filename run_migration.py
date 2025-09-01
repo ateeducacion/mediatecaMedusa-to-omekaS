@@ -9,9 +9,11 @@ Author: [Your Name]
 Date: 23-07-2025
 """
 
-import os
-import sys
+
 import argparse
+import getpass
+import os
+
 
 def parse_arguments():
     """Parse command line arguments."""
@@ -21,28 +23,23 @@ def parse_arguments():
     parser.add_argument('--key-identity', required=True, help='Omeka S API key identity')
     parser.add_argument('--key-credential', required=True, help='Omeka S API key credential')
     parser.add_argument('--wp-username', required=True, help='WordPress username')
-    parser.add_argument('--wp-password', required=True, help='WordPress password')
+    # wp-password is removed in favor of secure prompt
     parser.add_argument('--config', default='migration_config.json', help='Path to migration configuration file (default: migration_config.json)')
-    parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+    parser.add_argument('--log-level', default='INFO', choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'],
                         help='Set the logging level (default: INFO)')
-    # --as-task parameter removed, behavior is now always as if --as-task=y
-    parser.add_argument('--execute-tasks', type=str,
-                        help='JSON string with bulk_import_ids to execute: \'{"bulk_import_id":[1,2,3]}\'')
     parser.add_argument('--output-file', type=str,
                         help='Path to the output JSON file with migration results')
     return parser.parse_args()
+
 
 def main():
     """Main function to run the migration process."""
     # Parse command line arguments
     args = parse_arguments()
-    
+
     # Build the command to run the main script
-    command = f"python main.py --csv {args.csv} --omeka-url {args.omeka_url} --key-identity {args.key_identity} --key-credential {args.key_credential} --wp-username {args.wp_username} --wp-password {args.wp_password} --config {args.config} --log-level {args.log_level}"
-    
-    # Add execute-tasks parameter if provided
-    if args.execute_tasks:
-        command += f" --execute-tasks '{args.execute_tasks}'"
+    # wp-password is now prompted in the target script; do not pass via CLI
+    command = f"python main.py --csv {args.csv} --omeka-url {args.omeka_url} --key-identity {args.key_identity} --key-credential {args.key_credential} --wp-username {args.wp_username} --config {args.config} --log-level {args.log_level}"
     
     # Add output-file parameter if provided
     if args.output_file:

@@ -117,7 +117,7 @@ foreach ($migrationData as $index => &$channel) {
 
     // Get item sets and items count for the site
     $counts = getItemCounts($siteId, $api);
-    
+
     // Add counts to the channel data
     $channel['omeka_itemsets_count'] = $counts['itemSetsCount'];
     $channel['omeka_items_count'] = $counts['itemsCount'];
@@ -378,8 +378,8 @@ function getItemCounts($siteId, $api) {
         }
         
         // Get item sets count for the site
-        $itemSetsResponse = $api->search('item_sets', ['site_id' => $siteId]);
-        $counts['itemSetsCount'] = $itemSetsResponse->getTotalResults();
+        $siteItemSets = $site->siteItemSets();
+        $counts['itemSetsCount'] = count($siteItemSets);
         
         // Get items count for the site
         $itemsResponse = $api->search('items', ['site_id' => $siteId]);

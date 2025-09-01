@@ -19,6 +19,7 @@ import logging
 import os
 import sys
 import time
+import getpass
 from typing import List, Dict, Optional
 
 from src.WordPress.WordPressExporter import WordPressExporter
@@ -143,23 +144,24 @@ def main():
     """Main function to parse arguments and run the download process."""
     parser = argparse.ArgumentParser(description='Download WordPress channel exports.')
     parser.add_argument('--username', required=True, help='Username for WordPress authentication')
-    parser.add_argument('--password', required=True, help='Password for WordPress authentication')
     parser.add_argument('--start', type=int, help='Channel number to start from')
     parser.add_argument('--stop', type=int, help='Channel number to stop at')
     parser.add_argument('--output-dir', default='exports/channels', help='Directory to save exported files')
     parser.add_argument('--csv-path', default='exports/mediatecas.csv', help='Path to the CSV file with channel information')
     
     args = parser.parse_args()
-    
     try:
         # Read the channels from the CSV file
         channels = read_channels_csv(args.csv_path)
+        
+        # Prompt for password securely (no echo)
+        password = getpass.getpass("Password: ")
         
         # Download the channel exports
         download_channel_exports(
             channels, 
             args.username, 
-            args.password, 
+            password, 
             args.output_dir, 
             args.start,
             args.stop

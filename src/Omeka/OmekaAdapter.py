@@ -118,14 +118,13 @@ class OmekaAdapter:
         
         # First, get the current site data
         response = self._make_request("GET", endpoint, params={})
-        
         if response.status_code != 200:
             self.logger.error(f"Failed to get site data. Site ID: {site_id}. Status code: {response.status_code}")
             self.logger.error(f"Response: {response.text}")
             response.raise_for_status()
         
         site_data = response.json()
-        
+ 
         # Add the user to the site permissions
         site_permissions = site_data.get("o:site_permission", [])
         
@@ -147,10 +146,10 @@ class OmekaAdapter:
         self.logger.debug(f"Adding user (ID: {user_id}) to site (ID: {site_id}) with role: {role}")
         response = self._make_request("PUT", endpoint, site_data)
         
+        
         if response.status_code == 200:
-            updated_site_data = response.json()
             self.logger.info(f"User (ID: {user_id}) added to site (ID: {site_id}) successfully")
-            return updated_site_data
+            return site_data
         else:
             self.logger.error(f"Failed to add user to site. Site ID: {site_id}, User ID: {user_id}. Status code: {response.status_code}")
             self.logger.error(f"Response: {response.text}")
