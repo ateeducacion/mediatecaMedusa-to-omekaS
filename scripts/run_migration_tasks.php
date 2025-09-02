@@ -378,8 +378,10 @@ function getItemCounts($siteId, $api) {
         }
         
         // Get item sets count for the site
-        $siteItemSets = $site->siteItemSets();
-        $counts['itemSetsCount'] = count($siteItemSets);
+        $data = $siteRepresentation->jsonSerialize();
+
+        // Contar site_item_set
+        $counts['itemSetsCount'] = isset($data['o:site_item_set']) ? count($data['o:site_item_set']) : 0;
         
         // Get items count for the site
         $itemsResponse = $api->search('items', ['site_id' => $siteId]);
