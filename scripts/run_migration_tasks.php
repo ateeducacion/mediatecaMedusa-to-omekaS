@@ -378,7 +378,7 @@ function getItemCounts($siteId, $api) {
         }
         
         // Get item sets count for the site
-        $data = $siteRepresentation->jsonSerialize();
+        $data = $site->jsonSerialize();
 
         // Contar site_item_set
         $counts['itemSetsCount'] = isset($data['o:site_item_set']) ? count($data['o:site_item_set']) : 0;
@@ -386,6 +386,10 @@ function getItemCounts($siteId, $api) {
         // Get items count for the site
         $itemsResponse = $api->search('items', ['site_id' => $siteId]);
         $counts['itemsCount'] = $itemsResponse->getTotalResults();
+
+        // Get media count for the site
+        $mediaResponse = $api->search('media', ['site_id' => $siteId]);
+        $counts['mediaCount'] = $mediaResponse->getTotalResults();
         
         echo "    Site counts - Item Sets: " . $counts['itemSetsCount'] . ", Items: " . $counts['itemsCount'] . "\n";
     } catch (Exception $e) {
