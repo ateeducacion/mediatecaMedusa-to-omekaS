@@ -329,7 +329,7 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
             $itemSetData = $itemSet->jsonSerialize();
 
             // Clear dcterms:subject field
-            $itemSetData['dcterms:subject'] = [];
+            unset($itemSetData['dcterms:subject']);
             
             // Update the item set
             $api->update('item_sets', $itemSetId, $itemSetData);
