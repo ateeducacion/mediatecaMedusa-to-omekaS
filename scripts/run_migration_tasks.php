@@ -326,19 +326,19 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
                 continue;
             }
             
+            $itemSetData = $itemSet->jsonSerialize();
+
+            // Clear dcterms:subject field
+            $itemSetData['dcterms:subject'] = [];
+            
+            // Update the item set
+            $api->update('item_sets', $itemSetId, $itemSetData, []);
+            
             // Add to site
             $updatedSiteData['o:site_item_set'][] = [
                 'o:item_set' => ['o:id' => $itemSetId]
             ];
-            
-            // Clear dcterms:subject field
-            $itemSetData = [
-                'dcterms:subject' => []
-            ];
-            
-            // Update the item set
-            $api->update('item_sets', $itemSetId, $itemSetData, [], ['isPartial' => true]);
-            
+
             $addedCount++;
         }
         
@@ -391,7 +391,7 @@ function getItemCounts($siteId, $api) {
         $mediaResponse = $api->search('media', ['site_id' => $siteId]);
         $counts['mediaCount'] = $mediaResponse->getTotalResults();
         
-        echo "    Site counts - Item Sets: " . $counts['itemSetsCount'] . ", Items: " . $counts['itemsCount'] . "\n";
+        echo "    Site counts - Item Sets: " . $counts['itemSetsCount'] . ", Items: " . $counts['itemsCount'] . ", Media: " . $counts['mediaCount'] . "\n";
     } catch (Exception $e) {
         echo "    Error getting item counts: " . $e->getMessage() . "\n";
     }
