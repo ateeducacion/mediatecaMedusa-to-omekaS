@@ -332,7 +332,7 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
             $itemSetData['dcterms:subject'] = [];
             
             // Update the item set
-            $api->update('item_sets', $itemSetId, $itemSetData, []);
+            $api->update('item_sets', $itemSetId, $itemSetData);
             
             // Add to site
             $updatedSiteData['o:site_item_set'][] = [
