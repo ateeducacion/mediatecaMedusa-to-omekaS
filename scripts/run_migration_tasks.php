@@ -334,7 +334,7 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
             
             echo json_encode($itemSetData, JSON_PRETTY_PRINT) . "\n";
             // Update the item set
-            $api->update('item_sets', $itemSetId, $itemSetData);
+            $api->update('item_sets', $itemSetId, $itemSetData,[], ['isPartial' => false]);
             
             // Add to site
             $updatedSiteData['o:site_item_set'][] = [
