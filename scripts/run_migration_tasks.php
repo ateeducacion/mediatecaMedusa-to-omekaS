@@ -326,13 +326,11 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
                 continue;
             }
             
-            $itemSetData = $itemSet->jsonSerialize();
-            echo json_encode($itemSetData,JSON_PRETTY_PRINT);
+            // Prepare item set data for update
+            $itemSetData = cleanItemSetForUpdate($itemSet);
 
             // Clear dcterms:subject field
             unset($itemSetData['dcterms:subject']);
-
-            echo json_encode($itemSetData,JSON_PRETTY_PRINT);
             
             // Update the item set
             $api->update('item_sets', $itemSetId, $itemSetData);
@@ -400,4 +398,30 @@ function getItemCounts($siteId, $api) {
     }
     
     return $counts;
+}
+/**
+ * Prepare an ItemSetRepresentation for safe update.
+ *
+ * @param \Omeka\Api\Representation\ItemSetRepresentation $itemSet
+ * @return array Cleaned array for update
+ */
+function cleanItemSetForUpdate(\Omeka\Api\Representation\ItemSetRepresentation $itemSet): array
+{
+    $data = $itemSet->jsonSerialize();
+
+    // Remove read-only/system keys
+    unset(
+        $data['@context'],
+        $data['@id'],
+        $data['@type'],
+        $data['o:id'],
+        $data['o:owner'],
+        $data['o:created'],
+        $data['o:modified'],
+        $data['o:items'],
+        $data['o:thumbnail'],
+        $data['thumbnail_display_urls']
+    );
+
+    return $data;
 }
