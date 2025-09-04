@@ -354,10 +354,6 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
                 'o:site_item_set' => $updatedSiteData['o:site_item_set']
             ];
             
-            // Debug output
-            echo "    Updating site with the following data:\n";
-            echo "    " . json_encode($siteUpdateData, JSON_PRETTY_PRINT) . "\n";
-            
             $api->update('sites', $siteId, $siteUpdateData, [], ['isPartial' => true]);
             echo "    Added $addedCount item sets to site (ID: $siteId)\n";
         }
