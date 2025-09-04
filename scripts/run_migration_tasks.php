@@ -332,6 +332,7 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
             // Clear dcterms:subject field
             unset($itemSetData['dcterms:subject']);
             
+            echo json_encode($itemSetData, JSON_PRETTY_PRINT) . "\n";
             // Update the item set
             $api->update('item_sets', $itemSetId, $itemSetData);
             
