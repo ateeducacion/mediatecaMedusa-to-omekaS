@@ -332,10 +332,8 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
             // Only remove the dcterms:subject field, not all fields
             if (isset($itemSetData['dcterms:subject'])) {
                 // Create a new array with just the dcterms:subject field to update
-                $updateData = [
-                    'dcterms:subject' => [] // Empty array to clear the field
-                ];
-                
+                $itemSetData['dcterms:subject']= [];
+                $itemSetData=json_decode(json_encode($itemSetData),true);
                 // Update only the dcterms:subject field
                 $api->update('item_sets', $itemSetId, $updateData, [], ['isPartial' => true]);
                 echo "    Cleared dcterms:subject for item set ID: $itemSetId\n";
