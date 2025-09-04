@@ -114,6 +114,7 @@ def count_tags(xml_text: str) -> tuple:
     - <item ...> tags with <wp:post_type>=attachment and <wp:post_parent>=0 (attachment_root_items)
     - <item ...> tags with <wp:post_type>=attachment (attachment_items)
     - <wp:term_taxonomy><![CDATA[media-category]]></wp:term_taxonomy> occurrences (media_category_terms)
+    - Extract the date from <wp:post_date> tag for each item
     The counts are performed on the raw XML string to avoid namespace parsing issues.
     """
     
@@ -142,11 +143,27 @@ def count_tags(xml_text: str) -> tuple:
     media_category_matches = re.findall(media_category_pattern, xml_text, flags=re.IGNORECASE | re.DOTALL)
     media_category_terms = len(media_category_matches)
     
-    return attachment_root_items, attachment_items, media_category_terms
+    # Extract the date from the last attachment item's post_date tag
+    post_date = ""
+    # Filter item blocks to only include those with post_type=attachment
+    attachment_items_blocks = []
+    for item_block in item_blocks:
+        post_type_pattern = r'<wp:post_type\b[^>]*>\s*(?:<!\[CDATA\[)?\s*attachment\s*(?:\]\]>)?\s*</wp:post_type>'
+        if re.search(post_type_pattern, item_block, flags=re.IGNORECASE):
+            attachment_items_blocks.append(item_block)
+    
+    # Get the date from the last attachment item
+    if attachment_items_blocks:
+        post_date_pattern = r'<wp:post_date\b[^>]*>\s*(?:<!\[CDATA\[)?\s*(.*?)\s*(?:\]\]>)?\s*</wp:post_date>'
+        post_date_match = re.search(post_date_pattern, attachment_items_blocks[-1], flags=re.IGNORECASE)
+        if post_date_match:
+            post_date = post_date_match.group(1)
+    
+    return attachment_root_items, attachment_items, media_category_terms, post_date
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Count <item> and <wp:category> tags in XML retrieved from URLs listed in a CSV."
+        description="Count <item> and <wp:category> tags in XML retrieved from URLs listed in a CSV. Also extracts the post date."
     )
     parser.add_argument("-i", "--input", default="exports/mediatecas.csv", help="Input CSV path")
     parser.add_argument("-o", "--output", default="exports/medias_xml_tag_counts.csv", help="Output CSV path")
@@ -184,7 +201,7 @@ def main():
             # Prepare to write output
         with open(input_csv, newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f)
-            fieldnames = ["numero", "nombre", "url", "attachment_root_items", "attachment_items", "media_category_terms", "error"]
+            fieldnames = ["numero", "nombre", "url", "attachment_root_items", "attachment_items", "media_category_terms", "post_date", "error"]
 
             with open(output_csv, "w", newline="", encoding="utf-8") as out_f:
                 writer = csv.DictWriter(out_f, fieldnames=fieldnames)
@@ -215,6 +232,7 @@ def main():
                     attachment_root_items = 0
                     attachment_items = 0
                     media_category_terms = 0
+                    post_date = ""
                     error = ""
 
                     try:
@@ -250,7 +268,7 @@ def main():
                             xml_text = read_xml_from_dir(resolved, xml_dir)
                         else:
                             xml_text = fetch_xml(url, timeout=timeout, session=session)
-                        attachment_root_items, attachment_items, media_category_terms = count_tags(xml_text)
+                        attachment_root_items, attachment_items, media_category_terms, post_date = count_tags(xml_text)
                         success += 1
                     except FileNotFoundError as e:
                         error = f"file_not_found:{str(e)}"
@@ -264,6 +282,7 @@ def main():
                         "attachment_root_items": attachment_root_items,
                         "attachment_items": attachment_items,
                         "media_category_terms": media_category_terms,
+                        "post_date": post_date,
                         "error": error
                     })
 
