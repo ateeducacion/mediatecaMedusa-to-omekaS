@@ -336,7 +336,6 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
                 $itemSetData=json_decode(json_encode($itemSetData),true);
                 // Update only the dcterms:subject field
                 $api->update('item_sets', $itemSetId, $itemSetData, [], ['isPartial' => true]);
-                echo "    Cleared dcterms:subject for item set ID: $itemSetId\n";
             }
             
             // Add to site
