@@ -329,12 +329,17 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
             // Prepare item set data for update
             $itemSetData = cleanItemSetForUpdate($itemSet);
 
-            // Clear dcterms:subject field
-            unset($itemSetData['dcterms:subject']);
-            
-            echo json_encode($itemSetData, JSON_PRETTY_PRINT) . "\n";
-            // Update the item set
-            $api->update('item_sets', $itemSetId, $itemSetData,[], ['isPartial' => true]);
+            // Only remove the dcterms:subject field, not all fields
+            if (isset($itemSetData['dcterms:subject'])) {
+                // Create a new array with just the dcterms:subject field to update
+                $updateData = [
+                    'dcterms:subject' => [] // Empty array to clear the field
+                ];
+                
+                // Update only the dcterms:subject field
+                $api->update('item_sets', $itemSetId, $updateData, [], ['isPartial' => true]);
+                echo "    Cleared dcterms:subject for item set ID: $itemSetId\n";
+            }
             
             // Add to site
             $updatedSiteData['o:site_item_set'][] = [
@@ -346,7 +351,16 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
         
         // Update the site with new item sets
         if ($addedCount > 0) {
-            $api->update('sites', $siteId, $updatedSiteData, [], ['isPartial' => true]);
+            // Make sure we're only sending the site item set data
+            $siteUpdateData = [
+                'o:site_item_set' => $updatedSiteData['o:site_item_set']
+            ];
+            
+            // Debug output
+            echo "    Updating site with the following data:\n";
+            echo "    " . json_encode($siteUpdateData, JSON_PRETTY_PRINT) . "\n";
+            
+            $api->update('sites', $siteId, $siteUpdateData, [], ['isPartial' => true]);
             echo "    Added $addedCount item sets to site (ID: $siteId)\n";
         }
         
