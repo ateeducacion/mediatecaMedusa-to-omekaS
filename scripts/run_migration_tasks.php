@@ -282,7 +282,9 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
         $currentItemSetIds = [];
         foreach ($siteItemSets as $siteItemSet) {
             $currentItemSetIds[] = $siteItemSet->itemSet()->id();
+            echo " DATA ID:$siteId (ID ITEM SET: ".$siteItemSet->itemSet()->id().")\n";
         }
+        
         
         // Find item sets with dcterms:subject matching the site ID
         $query = [
@@ -337,7 +339,6 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
                 // Update only the dcterms:subject field
                 $api->update('item_sets', $itemSetId, $itemSetData, [], ['isPartial' => true]);
 
-                //echo "    Cleared dcterms:subject for item set site ID:$siteId (ID: $itemSetId)\n";
             }
             
             // Add to site
