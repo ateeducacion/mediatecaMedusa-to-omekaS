@@ -331,13 +331,11 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
             $itemSetData = cleanItemSetForUpdate($itemSet);
             
             // Only remove the dcterms:subject field, not all fields
-            if (isset($itemSetData['dcterms:subject'])) {
-                // Create a new array with just the dcterms:subject field to update
-                unset($itemSetData['dcterms:subject']);
-                $itemSetData=json_decode(json_encode($itemSetData),true);
-                // Update only the dcterms:subject field
-                $api->update('item_sets', $itemSetId, $itemSetData, [], ['isPartial' => true]);
-            }
+
+            $itemSetData['dcterms:subject']= [];
+            $itemSetData=json_decode(json_encode($itemSetData),true);
+            // Update only the dcterms:subject field
+            $api->update('item_sets', $itemSetId, $itemSetData, [], ['isPartial' => true]);
             
             // Add to site
             $updatedSiteData['o:site_item_set'][] = [
