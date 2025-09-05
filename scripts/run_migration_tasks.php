@@ -282,7 +282,6 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
         $currentItemSetIds = [];
         foreach ($siteItemSets as $siteItemSet) {
             $currentItemSetIds[] = $siteItemSet->itemSet()->id();
-            echo " DATA ID:$siteId (ID ITEM SET: ".$siteItemSet->itemSet()->id().")\n";
         }
         
         
@@ -325,6 +324,7 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
             
             // Skip if already in the site
             if (in_array($itemSetId, $currentItemSetIds)) {
+                echo " DATA ID:$siteId (ID ITEM SET: ".$itemSetId.")\n";
                 continue;
             }
             
