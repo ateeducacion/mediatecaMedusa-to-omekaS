@@ -324,12 +324,13 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
             
             // Skip if already in the site
             if (in_array($itemSetId, $currentItemSetIds)) {
-                echo " DATA ID:$siteId (ID ITEM SET: ".$itemSetId.")\n";
                 continue;
             }
             
             // Prepare item set data for update
             $itemSetData = cleanItemSetForUpdate($itemSet);
+            
+            echo " DATA ID:$siteId (ID ITEM SET: ".$itemSetData['dcterms:subject'].")\n";
 
             // Only remove the dcterms:subject field, not all fields
             if (isset($itemSetData['dcterms:subject'])) {

@@ -1,0 +1,24 @@
+[
+  {
+    "name": "Test Channel",
+    "url": "https://example.com/test",
+    "slug": "test-channel",
+    "editor": "test_admin",
+    "site_id": 123,
+    "user_id": 456,
+    "user_login": "test_admin",
+    "tasks_created": [
+      {
+        "importer": "Media Importer",
+        "id": 789
+      },
+      {
+        "importer": "Item Importer",
+        "id": 790
+      }
+    ],
+    "number_of_itemsets": 86,
+    "number_of_items": 12,
+    "number_of_media": 12
+  }
+]

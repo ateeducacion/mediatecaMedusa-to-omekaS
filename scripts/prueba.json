@@ -1,0 +1,54 @@
+[
+  {
+    "name": "Test Channel",
+    "url": "https://www3.gobiernodecanarias.org/medusa/mediateca/pruebas/",
+    "slug": "test-channel",
+    "editor": "test_admin",
+    "site_id": 2,
+    "user_id": 2,
+    "user_login": "test_admin",
+    "tasks_created": [
+      {
+        "importer": "",
+        "id": 10
+      },
+      {
+        "importer": "",
+        "id": 11
+      },
+      {
+        "importer": "",
+        "id": 12
+      }
+    ],
+    "number_of_itemsets": 11,
+    "number_of_items": 76,
+    "number_of_media": 160
+  },
+  {
+    "name": "Test Channel",
+    "url": "https://www3.gobiernodecanarias.org/medusa/mediateca/pruebas/",
+    "slug": "test-channel",
+    "editor": "test_admin",
+    "site_id": 2,
+    "user_id": 2,
+    "user_login": "test_admin",
+    "tasks_created": [
+      {
+        "importer": "T0. WP categories to Item Set XML",
+        "id": 13
+      },
+      {
+        "importer": "T1. WP posts to Items XML",
+        "id": 14
+      },
+      {
+        "importer": "T2. WP attachments to Media XML",
+        "id": 15
+      }
+    ],
+    "number_of_itemsets": 11,
+    "number_of_items": 76,
+    "number_of_media": 160
+  }
+]

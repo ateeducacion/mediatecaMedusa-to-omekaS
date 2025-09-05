@@ -1,0 +1,102 @@
+2025-09-02 08:05:20,750 - migration - INFO - Logging to C:\Users\franc\OneDrive\Documentos\Desarrollos\Trabajo\ATE\mediatecaMedusa-to-omekaS\logs\migration_20250902_080520.log
+2025-09-02 08:05:20,750 - migration - INFO - Starting WordPress to Omeka S migration process
+2025-09-02 08:05:26,813 - migration - INFO - Loading configuration from: migration_config.json
+2025-09-02 08:05:26,815 - migration - INFO - Configuration loaded successfully
+2025-09-02 08:05:26,815 - migration - INFO - Setting as_task parameter to '1' for all importers
+2025-09-02 08:05:26,815 - migration - INFO - Creating bulk importers
+2025-09-02 08:05:26,938 - migration - INFO - Found bulk importer with label: T0. WP categories to Item Set XML (ID: 21)
+2025-09-02 08:05:26,938 - migration - WARNING - Importer already exists: T0. WP categories to Item Set XML (ID: 21)
+2025-09-02 08:05:27,037 - migration - INFO - Found bulk importer with label: T1. WP posts to Items XML (ID: 22)
+2025-09-02 08:05:27,037 - migration - WARNING - Importer already exists: T1. WP posts to Items XML (ID: 22)
+2025-09-02 08:05:27,162 - migration - INFO - Found bulk importer with label: T2. WP attachments to Media XML (ID: 23)
+2025-09-02 08:05:27,162 - migration - WARNING - Importer already exists: T2. WP attachments to Media XML (ID: 23)
+2025-09-02 08:05:27,164 - migration - INFO - Found 3 channels to migrate
+2025-09-02 08:05:27,164 - migration - INFO - Initializing JSON reporter with output file: prueba.json
+2025-09-02 08:05:27,164 - migration - INFO - Migrating channel: CEIP Los Blanquitos
+2025-09-02 08:05:27,165 - migration - INFO - Starting migration for channel: CEIP Los Blanquitos
+2025-09-02 08:05:27,165 - migration - INFO - Creating site in Omeka S: CEIP Los Blanquitos
+2025-09-02 08:05:27,165 - migration - INFO - Getting site by slug: ceiplosblanquitos
+2025-09-02 08:05:27,258 - migration - INFO - Found site with slug: ceiplosblanquitos (ID: 14)
+2025-09-02 08:05:27,258 - migration - WARNING - Site already exists: CEIP Los Blanquitos (ID: 14)
+2025-09-02 08:05:27,259 - migration - INFO - Creating user in Omeka S: losblanquitos_admin
+2025-09-02 08:05:27,348 - migration - INFO - Found user with email: losblanquitos_admin@gobiernodecanarias.org (ID: 12)
+2025-09-02 08:05:27,348 - migration - WARNING - User already exists: losblanquitos_admin (ID: 12)
+2025-09-02 08:05:27,349 - migration - INFO - Adding user (ID: 12) to site (ID: 14)
+2025-09-02 08:05:27,442 - migration - WARNING - User (ID: 12) already has permissions for site (ID: 14)
+2025-09-02 08:05:27,442 - migration - INFO - User (ID: 12) added to site (ID: 14)
+2025-09-02 08:05:27,443 - migration - INFO - Exporting data from WordPress: https://www3.gobiernodecanarias.org/medusa/mediateca/ceiplosblanquitos
+2025-09-02 08:05:39,035 - migration - INFO - Data exported to: C:\Users\franc\OneDrive\Documentos\Desarrollos\Trabajo\ATE\mediatecaMedusa-to-omekaS\exports\ceiplosblanquitos.xml
+2025-09-02 08:05:39,036 - migration - INFO - Creating bulk import jobs for channel: CEIP Los Blanquitos
+2025-09-02 08:05:39,189 - migration - INFO - Setting SiteId parameter to '14' for import job
+2025-09-02 08:05:39,283 - migration - INFO - Bulk import job created successfully: (ID: 95)
+2025-09-02 08:05:39,284 - migration - INFO - Import job created for channel: CEIP Los Blanquitos, importer: T0. WP categories to Item Set XML (ID: 95)
+2025-09-02 08:05:39,374 - migration - INFO - Setting SiteId parameter to '14' for import job
+2025-09-02 08:05:39,524 - migration - INFO - Bulk import job created successfully: (ID: 96)
+2025-09-02 08:05:39,525 - migration - INFO - Import job created for channel: CEIP Los Blanquitos, importer: T1. WP posts to Items XML (ID: 96)
+2025-09-02 08:05:39,633 - migration - INFO - Setting SiteId parameter to '14' for import job
+2025-09-02 08:05:39,722 - migration - INFO - Bulk import job created successfully: (ID: 97)
+2025-09-02 08:05:39,723 - migration - INFO - Import job created for channel: CEIP Los Blanquitos, importer: T2. WP attachments to Media XML (ID: 97)
+2025-09-02 08:05:39,723 - migration - INFO - Created 3 import jobs for channel: CEIP Los Blanquitos
+2025-09-02 08:05:39,724 - migration - INFO - Migration completed for channel: CEIP Los Blanquitos
+2025-09-02 08:05:39,725 - migration - INFO - Created 3 bulk import jobs for channel: CEIP Los Blanquitos
+2025-09-02 08:05:39,725 - migration - INFO - Adding report for channel: CEIP Los Blanquitos
+2025-09-02 08:05:39,730 - migration - INFO - Added report for channel CEIP Los Blanquitos to prueba.json
+2025-09-02 08:05:39,731 - migration - INFO - Migrating channel: Canal Educación Personas Adultas
+2025-09-02 08:05:39,734 - migration - INFO - Starting migration for channel: Canal Educación Personas Adultas
+2025-09-02 08:05:39,734 - migration - INFO - Creating site in Omeka S: Canal Educación Personas Adultas
+2025-09-02 08:05:39,734 - migration - INFO - Getting site by slug: epa
+2025-09-02 08:05:39,838 - migration - INFO - Found site with slug: epa (ID: 15)
+2025-09-02 08:05:39,839 - migration - WARNING - Site already exists: Canal Educación Personas Adultas (ID: 15)
+2025-09-02 08:05:39,840 - migration - INFO - Creating user in Omeka S: epa_admin
+2025-09-02 08:05:39,936 - migration - INFO - Found user with email: epa_admin@gobiernodecanarias.org (ID: 13)
+2025-09-02 08:05:39,937 - migration - WARNING - User already exists: epa_admin (ID: 13)
+2025-09-02 08:05:39,937 - migration - INFO - Adding user (ID: 13) to site (ID: 15)
+2025-09-02 08:05:40,012 - migration - WARNING - User (ID: 13) already has permissions for site (ID: 15)
+2025-09-02 08:05:40,012 - migration - INFO - User (ID: 13) added to site (ID: 15)
+2025-09-02 08:05:40,013 - migration - INFO - Exporting data from WordPress: https://www3.gobiernodecanarias.org/medusa/mediateca/epa
+2025-09-02 08:05:49,808 - migration - INFO - Data exported to: C:\Users\franc\OneDrive\Documentos\Desarrollos\Trabajo\ATE\mediatecaMedusa-to-omekaS\exports\epa.xml
+2025-09-02 08:05:49,808 - migration - INFO - Creating bulk import jobs for channel: Canal Educación Personas Adultas
+2025-09-02 08:05:49,901 - migration - INFO - Setting SiteId parameter to '15' for import job
+2025-09-02 08:05:49,980 - migration - INFO - Bulk import job created successfully: (ID: 98)
+2025-09-02 08:05:49,981 - migration - INFO - Import job created for channel: Canal Educación Personas Adultas, importer: T0. WP categories to Item Set XML (ID: 98)
+2025-09-02 08:05:50,064 - migration - INFO - Setting SiteId parameter to '15' for import job
+2025-09-02 08:05:50,144 - migration - INFO - Bulk import job created successfully: (ID: 99)
+2025-09-02 08:05:50,145 - migration - INFO - Import job created for channel: Canal Educación Personas Adultas, importer: T1. WP posts to Items XML (ID: 99)
+2025-09-02 08:05:50,229 - migration - INFO - Setting SiteId parameter to '15' for import job
+2025-09-02 08:05:50,314 - migration - INFO - Bulk import job created successfully: (ID: 100)
+2025-09-02 08:05:50,314 - migration - INFO - Import job created for channel: Canal Educación Personas Adultas, importer: T2. WP attachments to Media XML (ID: 100)
+2025-09-02 08:05:50,315 - migration - INFO - Created 3 import jobs for channel: Canal Educación Personas Adultas
+2025-09-02 08:05:50,315 - migration - INFO - Migration completed for channel: Canal Educación Personas Adultas
+2025-09-02 08:05:50,315 - migration - INFO - Created 3 bulk import jobs for channel: Canal Educación Personas Adultas
+2025-09-02 08:05:50,317 - migration - INFO - Adding report for channel: Canal Educación Personas Adultas
+2025-09-02 08:05:50,323 - migration - INFO - Added report for channel Canal Educación Personas Adultas to prueba.json
+2025-09-02 08:05:50,324 - migration - INFO - Migrating channel: CEIP LAJARES
+2025-09-02 08:05:50,324 - migration - INFO - Starting migration for channel: CEIP LAJARES
+2025-09-02 08:05:50,324 - migration - INFO - Creating site in Omeka S: CEIP LAJARES
+2025-09-02 08:05:50,324 - migration - INFO - Getting site by slug: ceiplajares
+2025-09-02 08:05:50,418 - migration - INFO - Found site with slug: ceiplajares (ID: 16)
+2025-09-02 08:05:50,419 - migration - WARNING - Site already exists: CEIP LAJARES (ID: 16)
+2025-09-02 08:05:50,420 - migration - INFO - Creating user in Omeka S: lajares_admin
+2025-09-02 08:05:50,504 - migration - INFO - Found user with email: lajares_admin@gobiernodecanarias.org (ID: 14)
+2025-09-02 08:05:50,504 - migration - WARNING - User already exists: lajares_admin (ID: 14)
+2025-09-02 08:05:50,505 - migration - INFO - Adding user (ID: 14) to site (ID: 16)
+2025-09-02 08:05:50,585 - migration - WARNING - User (ID: 14) already has permissions for site (ID: 16)
+2025-09-02 08:05:50,585 - migration - INFO - User (ID: 14) added to site (ID: 16)
+2025-09-02 08:05:50,586 - migration - INFO - Exporting data from WordPress: https://www3.gobiernodecanarias.org/medusa/mediateca/ceiplajares
+2025-09-02 08:05:55,598 - migration - INFO - Data exported to: C:\Users\franc\OneDrive\Documentos\Desarrollos\Trabajo\ATE\mediatecaMedusa-to-omekaS\exports\ceiplajares.xml
+2025-09-02 08:05:55,598 - migration - INFO - Creating bulk import jobs for channel: CEIP LAJARES
+2025-09-02 08:05:55,687 - migration - INFO - Setting SiteId parameter to '16' for import job
+2025-09-02 08:05:55,771 - migration - INFO - Bulk import job created successfully: (ID: 101)
+2025-09-02 08:05:55,771 - migration - INFO - Import job created for channel: CEIP LAJARES, importer: T0. WP categories to Item Set XML (ID: 101)
+2025-09-02 08:05:55,843 - migration - INFO - Setting SiteId parameter to '16' for import job
+2025-09-02 08:05:55,919 - migration - INFO - Bulk import job created successfully: (ID: 102)
+2025-09-02 08:05:55,920 - migration - INFO - Import job created for channel: CEIP LAJARES, importer: T1. WP posts to Items XML (ID: 102)
+2025-09-02 08:05:56,001 - migration - INFO - Setting SiteId parameter to '16' for import job
+2025-09-02 08:05:56,078 - migration - INFO - Bulk import job created successfully: (ID: 103)
+2025-09-02 08:05:56,079 - migration - INFO - Import job created for channel: CEIP LAJARES, importer: T2. WP attachments to Media XML (ID: 103)
+2025-09-02 08:05:56,080 - migration - INFO - Created 3 import jobs for channel: CEIP LAJARES
+2025-09-02 08:05:56,081 - migration - INFO - Migration completed for channel: CEIP LAJARES
+2025-09-02 08:05:56,081 - migration - INFO - Created 3 bulk import jobs for channel: CEIP LAJARES
+2025-09-02 08:05:56,082 - migration - INFO - Adding report for channel: CEIP LAJARES
+2025-09-02 08:05:56,084 - migration - INFO - Added report for channel CEIP LAJARES to prueba.json
+2025-09-02 08:05:56,084 - migration - INFO - Migration process completed successfully

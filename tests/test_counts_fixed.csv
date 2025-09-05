@@ -1,0 +1,4 @@
+numero,nombre,url,item_count,wp_category_count,categories_2,root_items,error
+2,Canal de Tecnología Educativa,https://www3.gobiernodecanarias.org/medusa/mediateca/canaldetecnologiaeducativa,0,0,0,0,file_not_found:Local XML file not found for 'https://www3.gobiernodecanarias.org/medusa/mediateca/canaldetecnologiaeducativa' in 'exports'
+3,CEIP San Borondón,https://www3.gobiernodecanarias.org/medusa/mediateca/ceipsanborondon,0,0,0,0,file_not_found:Local XML file not found for 'https://www3.gobiernodecanarias.org/medusa/mediateca/ceipsanborondon' in 'exports'
+4,IES La Laguna,https://www3.gobiernodecanarias.org/medusa/mediateca/ieslalaguna,0,0,0,0,file_not_found:Local XML file not found for 'https://www3.gobiernodecanarias.org/medusa/mediateca/ieslalaguna' in 'exports'

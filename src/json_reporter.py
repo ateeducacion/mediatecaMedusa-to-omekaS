@@ -138,7 +138,7 @@ class JSONReporter:
         
         # Write updated data
         with open(self.output_file, 'w', encoding='utf-8') as f:
-            json.dump(existing_data, f, indent=2)
+            json.dump(existing_data, f, indent=2, ensure_ascii=False)
         
         self.logger.info(f"Added report for channel {channel_data.get('name')} to {self.output_file}")
     

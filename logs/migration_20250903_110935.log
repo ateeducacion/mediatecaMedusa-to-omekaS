@@ -1,0 +1,13 @@
+2025-09-03 11:09:35,112 - migration - INFO - Logging to C:\Users\franc\OneDrive\Documentos\Desarrollos\Trabajo\ATE\mediatecaMedusa-to-omekaS\logs\migration_20250903_110935.log
+2025-09-03 11:09:35,113 - migration - INFO - Starting WordPress to Omeka S migration process
+2025-09-03 11:09:40,656 - migration - INFO - Loading configuration from: migration_config.json
+2025-09-03 11:09:40,657 - migration - INFO - Configuration loaded successfully
+2025-09-03 11:09:40,658 - migration - INFO - Setting as_task parameter to '1' for all importers
+2025-09-03 11:09:40,659 - migration - INFO - Creating bulk importers
+2025-09-03 11:09:40,790 - migration - INFO - Found bulk importer with label: T0. WP categories to Item Set XML (ID: 21)
+2025-09-03 11:09:40,790 - migration - WARNING - Importer already exists: T0. WP categories to Item Set XML (ID: 21)
+2025-09-03 11:09:40,885 - migration - INFO - Found bulk importer with label: T1. WP posts to Items XML (ID: 22)
+2025-09-03 11:09:40,886 - migration - WARNING - Importer already exists: T1. WP posts to Items XML (ID: 22)
+2025-09-03 11:09:40,974 - migration - INFO - Found bulk importer with label: T2. WP attachments to Media XML (ID: 23)
+2025-09-03 11:09:40,974 - migration - WARNING - Importer already exists: T2. WP attachments to Media XML (ID: 23)
+2025-09-03 11:09:40,975 - migration - ERROR - Error during migration process: 'NoneType' object has no attribute 'strip'

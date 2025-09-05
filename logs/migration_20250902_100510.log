@@ -1,0 +1,27 @@
+2025-09-02 10:05:10,536 - migration - INFO - Logging to C:\Users\franc\OneDrive\Documentos\Desarrollos\Trabajo\ATE\mediatecaMedusa-to-omekaS\logs\migration_20250902_100510.log
+2025-09-02 10:05:10,537 - migration - INFO - Starting WordPress to Omeka S migration process
+2025-09-02 10:05:15,476 - migration - INFO - Loading configuration from: migration_config.json
+2025-09-02 10:05:15,481 - migration - INFO - Configuration loaded successfully
+2025-09-02 10:05:15,482 - migration - INFO - Setting as_task parameter to '1' for all importers
+2025-09-02 10:05:15,482 - migration - INFO - Creating bulk importers
+2025-09-02 10:05:15,726 - migration - INFO - Found bulk importer with label: T0. WP categories to Item Set XML (ID: 21)
+2025-09-02 10:05:15,726 - migration - WARNING - Importer already exists: T0. WP categories to Item Set XML (ID: 21)
+2025-09-02 10:05:15,902 - migration - INFO - Found bulk importer with label: T1. WP posts to Items XML (ID: 22)
+2025-09-02 10:05:15,903 - migration - WARNING - Importer already exists: T1. WP posts to Items XML (ID: 22)
+2025-09-02 10:05:16,058 - migration - INFO - Found bulk importer with label: T2. WP attachments to Media XML (ID: 23)
+2025-09-02 10:05:16,058 - migration - WARNING - Importer already exists: T2. WP attachments to Media XML (ID: 23)
+2025-09-02 10:05:16,059 - migration - INFO - Found 3 channels to migrate
+2025-09-02 10:05:16,060 - migration - INFO - Initializing JSON reporter with output file: prueba.json
+2025-09-02 10:05:16,062 - migration - INFO - Migrating channel: CEIP Los Blanquitos
+2025-09-02 10:05:16,062 - migration - INFO - Starting migration for channel: CEIP Los Blanquitos
+2025-09-02 10:05:16,063 - migration - INFO - Creating site in Omeka S: CEIP Los Blanquitos
+2025-09-02 10:05:16,063 - migration - INFO - Getting site by slug: ceiplosblanquitos
+2025-09-02 10:05:16,350 - migration - INFO - Found site with slug: ceiplosblanquitos (ID: 14)
+2025-09-02 10:05:16,351 - migration - WARNING - Site already exists: CEIP Los Blanquitos (ID: 14)
+2025-09-02 10:05:16,351 - migration - INFO - Creating user in Omeka S: losblanquitos_admin
+2025-09-02 10:05:16,558 - migration - INFO - Found user with email: losblanquitos_admin@gobiernodecanarias.org (ID: 12)
+2025-09-02 10:05:16,559 - migration - WARNING - User already exists: losblanquitos_admin (ID: 12)
+2025-09-02 10:05:16,560 - migration - INFO - Adding user (ID: 12) to site (ID: 14)
+2025-09-02 10:05:16,793 - migration - WARNING - User (ID: 12) already has permissions for site (ID: 14)
+2025-09-02 10:05:16,794 - migration - INFO - User (ID: 12) added to site (ID: 14)
+2025-09-02 10:05:16,794 - migration - INFO - Exporting data from WordPress: https://www3.gobiernodecanarias.org/medusa/mediateca/ceiplosblanquitos

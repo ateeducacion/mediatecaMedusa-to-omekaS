@@ -1,0 +1,20 @@
+[
+  {
+    "name": "CEIP LAJARES",
+    "url": "https://www3.gobiernodecanarias.org/medusa/mediateca/ceiplajares",
+    "slug": "ceiplajares",
+    "editor": "lajares_admin",
+    "site_id": 6,
+    "user_id": 20,
+    "user_login": "lajares_admin",
+    "tasks_created": [
+      {
+        "importer": "T0. WP categories to Item Set XML",
+        "id": 514
+      }
+    ],
+    "number_of_itemsets": 86,
+    "number_of_items": 0,
+    "number_of_media": 0
+  }
+]

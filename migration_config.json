@@ -26,9 +26,11 @@
           "entries_to_skip": 0,
           "entries_max": 0,
           "info_diffs": false,
-          "action": "create",
+          "action": "append",
           "action_unidentified": "create",
-          "identifier_name": null,
+          "identifier_name": [
+             "dcterms:identifier"
+          ],
           "value_datatype_literal": false,
           "allow_duplicate_identifiers": false,
           "action_identifier_update": "append",
@@ -38,7 +40,7 @@
           "o:resource_class": null,
           "o:owner": "current",
           "o:is_public": true,
-          "o:oppeness": true,
+          "o:openness": true,
           "o:thumbnail": null
         }
       }

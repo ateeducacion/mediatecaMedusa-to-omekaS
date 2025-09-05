@@ -1,0 +1,80 @@
+[
+  {
+    "name": "CEIP LAJARES",
+    "url": "https://www3.gobiernodecanarias.org/medusa/mediateca/ceiplajares",
+    "slug": "ceiplajares",
+    "editor": "lajares_admin",
+    "site_id": 16,
+    "user_id": 14,
+    "user_login": "lajares_admin",
+    "tasks_created": [
+      {
+        "importer": "T0. WP categories to Item Set XML",
+        "id": 245
+      },
+      {
+        "importer": "T1. WP posts to Items XML",
+        "id": 246
+      },
+      {
+        "importer": "T2. WP attachments to Media XML",
+        "id": 247
+      }
+    ],
+    "number_of_itemsets": 86,
+    "number_of_items": 0,
+    "number_of_media": 0
+  },
+  {
+    "name": "CEIP Los Blanquitos",
+    "url": "https://www3.gobiernodecanarias.org/medusa/mediateca/ceiplosblanquitos",
+    "slug": "ceiplosblanquitos",
+    "editor": "ceiplosblanquitos_admin",
+    "site_id": 14,
+    "user_id": 16,
+    "user_login": "ceiplosblanquitos_admin",
+    "tasks_created": [
+      {
+        "importer": "T0. WP categories to Item Set XML",
+        "id": 248
+      },
+      {
+        "importer": "T1. WP posts to Items XML",
+        "id": 249
+      },
+      {
+        "importer": "T2. WP attachments to Media XML",
+        "id": 250
+      }
+    ],
+    "number_of_itemsets": 86,
+    "number_of_items": 6,
+    "number_of_media": 11
+  },
+  {
+    "name": "Canal Educación Personas Adultas",
+    "url": "https://www3.gobiernodecanarias.org/medusa/mediateca/epa",
+    "slug": "epa",
+    "editor": "epa_admin",
+    "site_id": 15,
+    "user_id": 13,
+    "user_login": "epa_admin",
+    "tasks_created": [
+      {
+        "importer": "T0. WP categories to Item Set XML",
+        "id": 251
+      },
+      {
+        "importer": "T1. WP posts to Items XML",
+        "id": 252
+      },
+      {
+        "importer": "T2. WP attachments to Media XML",
+        "id": 253
+      }
+    ],
+    "number_of_itemsets": 92,
+    "number_of_items": 32,
+    "number_of_media": 44
+  }
+]

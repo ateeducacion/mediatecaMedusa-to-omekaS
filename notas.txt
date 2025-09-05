@@ -1,0 +1,81 @@
+API en localhost:8080:
+    key_identity=hX2u9b3JvlztF5fh0sibuJk8evWTe6MV
+    key_credential=YdXCg8Ca0iS77puYEaMo5U8Qj4riPfgV
+
+API en localhost:8888
+    key_identity=BMyZWtodC7yHw8XucjunhByKH12t6J0B
+    key_credential=u3ZKLQkymmZGP0s7BiqHvmtrKDr0KQGX
+
+Pendiente:
+    actualizar sites-item_sets
+    csv de salida->script para arrancar las task (probar segundo plano?)
+    csv de salida (name,url,slug,editor,task_item_set,task_items,task_media,number of itemsets, number of items, number of media)
+
+Prompt for output file:
+- The programm must result a json file with this information: 
+    - name of channel migrated: as input file
+        - url: as input file
+        - slug: as input file
+        - editor: as input file
+        - site id 
+        - user id
+        - user login: as in input file
+        - task created: [
+            - task 1: {importer, id}
+            - task 2: {importer, id}
+            - task 3: {importer, id}
+        ]
+        - number of itemsets: count of "<wp:term_taxonomy><![CDATA[media-category]]></wp:term_taxonomy>" ocurrencies in xml file
+        - number of items: count of <wp:post_parent>0</wp:post_parent> ocurrencies in xml file
+        - number of media: count of <item> tag ocurrencies in xml file
+- add a param --output-file with the name of the output file
+- the output file must be filled after every channel is migrated so that if the programm stopped it would has the information collected in that momment.
+
+Prompt for php script for processing task
+- Make a php script for omeka s that takes a json input file and execute the script task.php for each bulkimport task indicated in the input file
+    - requirements:
+            - the script reads from a input json file with this format:
+                [
+                    {
+                        "name": "Test Channel",
+                        "url": "https://www3.gobiernodecanarias.org/medusa/mediateca/pruebas/",
+                        "slug": "test-channel",
+                        "editor": "test_admin",
+                        "site_id": 2,
+                        "user_id": 2,
+                        "user_login": "test_admin",
+                        "tasks_created": [
+                        {
+                            "importer": "T0. WP categories to Item Set XML",
+                            "id": 13
+                        },
+                        {
+                            "importer": "T1. WP posts to Items XML",
+                            "id": 14
+                        },
+                        {
+                            "importer": "T2. WP attachments to Media XML",
+                            "id": 15
+                        }
+                        ],
+                        "number_of_itemsets": 11,
+                        "number_of_items": 76,
+                        "number_of_media": 160
+                    }
+                ]
+
+        - the script return a json file with se same information of the input file but adding the job ids of each bulkimport task but adding a key-value, job_id, in each task_created element 
+        - job_id is taken from the output of the script task.php
+        - the json output file also has to add the number of item_sets and items of each site, use the php api of omeka s to get the information
+        - the script has a param to set as completed the original tasks so that the job cannot be duplicate
+        - write the script in scripts directory
+    - context: 
+        - Modules EasyAdmin and BulkImport installed
+        - The script is for a migration of about 800 sites in omeka s, so a detailed information regarding migration of each channel is mandatory
+        - this is a example of the task.php command of the module EasyAdmin: php '/var/www/html/modules/EasyAdmin/data/scripts/task.php' --task 'BulkImport\Job\Import' --user-id 1  --args '{"bulk_import_id": 4 }'
+        - use omeka s php api to perform operations in omeka s
+        - for testing use docker exec -it omeka-s-docker-omekas-1 php run_migration_task.php -- (params)...
+
+
+NOmbres de centros en mayusculas
+58538
