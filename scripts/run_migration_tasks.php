@@ -330,7 +330,7 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
             // Prepare item set data for update
             $itemSetData = cleanItemSetForUpdate($itemSet);
             
-            echo " DATA ID:$siteId (ID ITEM SET: ".json_encode($itemSetData['dcterms:subject']).")\n";
+            echo " DATA ID:$siteId (ID ITEM SET: ".json_encode($itemSetData).")\n";
 
             // Only remove the dcterms:subject field, not all fields
             if (isset($itemSetData['dcterms:subject'])) {
