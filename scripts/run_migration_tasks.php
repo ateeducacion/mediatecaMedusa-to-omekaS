@@ -268,6 +268,7 @@ function deleteTask($taskId, $entityManager) {
  */
 function addItemSetsToSite($siteId, $api, $entityManager) {
     try {
+        entityManager->clear(); // to avoid cache issues
         echo "    Adding item sets to site (ID: $siteId) using API with admin user...\n";
         
         // Get the site
@@ -320,6 +321,7 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
         
         // Add new item sets
         foreach ($itemSets as $itemSet) {
+            
             $itemSetId = $itemSet->id();
             
             // Skip if already in the site
@@ -331,12 +333,12 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
             $itemSetData = cleanItemSetForUpdate($itemSet);
             
             // Only remove the dcterms:subject field, not all fields
-
-            $itemSetData['dcterms:subject']= [];
-            $itemSetData=json_decode(json_encode($itemSetData),true);
-            // Update only the dcterms:subject field
-            $api->update('item_sets', $itemSetId, $itemSetData, [], ['isPartial' => true]);
-            
+            if (isset($itemSetData['dcterms:subject'])) {
+                $itemSetData['dcterms:subject']= [];
+                $itemSetData=json_decode(json_encode($itemSetData),true);
+                // Update only the dcterms:subject field
+                $api->update('item_sets', $itemSetId, $itemSetData, [], ['isPartial' => true]);
+            }
             // Add to site
             $updatedSiteData['o:site_item_set'][] = [
                 'o:item_set' => ['o:id' => $itemSetId]
