@@ -268,7 +268,7 @@ function deleteTask($taskId, $entityManager) {
  */
 function addItemSetsToSite($siteId, $api, $entityManager) {
     try {
-        entityManager->clear(); // to avoid cache issues
+        $entityManager->clear(); // to avoid cache issues
         echo "    Adding item sets to site (ID: $siteId) using API with admin user...\n";
         
         // Get the site
