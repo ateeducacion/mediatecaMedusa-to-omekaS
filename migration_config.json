@@ -40,7 +40,7 @@
           "o:resource_class": null,
           "o:owner": "current",
           "o:is_public": true,
-          "o:openness": true,
+          "o:is_open": true,
           "o:thumbnail": null
         }
       }
