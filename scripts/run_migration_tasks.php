@@ -24,7 +24,7 @@
 define('SCRIPT_VERSION', '1.0.0');
 
 // Parse command line arguments
-$options = getopt('', ['input-file:', 'output-file:', 'delete-tasks', 'omeka-path::']);
+$options = getopt('', ['input-file:', 'output-file:', 'delete-tasks', 'omeka-path:']);
 
 // Validate required arguments
 if (!isset($options['input-file']) || !isset($options['output-file'])) {
