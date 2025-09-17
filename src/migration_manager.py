@@ -237,7 +237,7 @@ class MigrationManager:
         Returns:
             A list of created bulk import jobs.
         """
-        self.logger.info(f"Creating bulk import jobs for channel: {channel_name}")
+        self.logger.info(f"Creating2 bulk import jobs for channel: {channel_name}")
         
         if not self.importers:
             self.logger.warning("No importers available. Skipping job creation.")
