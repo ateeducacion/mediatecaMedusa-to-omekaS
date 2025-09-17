@@ -5,13 +5,16 @@ This tool automates the migration of WordPress sites to Omeka S. It reads a CSV 
 ## Features
 
 - Read channel information from a CSV file
+  - Support for comment lines starting with '#'
 - Create sites in Omeka S
 - Create users in Omeka S
 - Add users to sites
 - Export WordPress data
+  - Error handling to continue processing when download fails
 - Create bulk importers in Omeka S
 - Create bulk import jobs in Omeka S
 - Configure migration using JSON configuration files
+- Detailed JSON reports with status information for each channel
 
 ## Project Structure
 
@@ -253,12 +256,24 @@ The CSV file should have the following columns:
 - `slug`: Slug of the channel
 - `editor`: Username of the editor
 
+Lines starting with '#' are treated as comments and ignored during processing. This allows you to add explanatory notes or temporarily disable certain channels without removing them from the file.
+
 Example:
 ```
 name,url,slug,editor
+# This is a comment line explaining the CSV format
+# name: Name of the channel
+# url: Web address of the channel
+# slug: Slug of the channel (optional, will be generated from name if empty)
+# editor: Username of the editor
 Channel 1,https://example.com/channel1,channel1,user1
+# This channel is for testing purposes
 Channel 2,https://example.com/channel2,channel2,user2
+# The following channel is the main one
+Channel 3,https://example.com/channel3,channel3,user3
 ```
+
+An example CSV file with comments is provided in the project root directory: `example_channels_with_comments.csv`.
 
 ## Configuration File
 
@@ -326,6 +341,69 @@ The configuration file has one main section:
 
 A sample configuration file is provided in the project root directory: `migration_config.json`.
 
+## JSON Report Format
+
+When using the `--output-file` parameter, the migration process generates a JSON report with detailed information about each channel. The report includes:
+
+- `name`: Name of the channel
+- `url`: Web address of the channel
+- `slug`: Slug of the channel
+- `editor`: Username of the editor
+- `site_id`: ID of the created site in Omeka S
+- `user_id`: ID of the created user in Omeka S
+- `user_login`: Username of the created user
+- `tasks_created`: List of created import jobs
+  - `importer`: Label of the importer
+  - `id`: ID of the import job
+- `number_of_itemsets`: Number of item sets in the exported XML
+- `number_of_items`: Number of items in the exported XML
+- `number_of_media`: Number of media in the exported XML
+- `status`: Status of the migration ('success' or 'error')
+- `error_message`: Error message if the migration failed (null if successful)
+
+The status field indicates whether the migration was successful or if there was an error. If there was an error, the error_message field provides more information about what went wrong. This allows you to easily identify channels that failed to migrate and take appropriate action.
+
+Example:
+```json
+[
+  {
+    "name": "Channel 1",
+    "url": "https://example.com/channel1",
+    "slug": "channel1",
+    "editor": "user1",
+    "site_id": 1,
+    "user_id": 1,
+    "user_login": "user1",
+    "tasks_created": [
+      {
+        "importer": "WordPress XML Importer",
+        "id": 1
+      }
+    ],
+    "number_of_itemsets": 5,
+    "number_of_items": 10,
+    "number_of_media": 20,
+    "status": "success",
+    "error_message": null
+  },
+  {
+    "name": "Channel 2",
+    "url": "https://example.com/channel2",
+    "slug": "channel2",
+    "editor": "user2",
+    "site_id": 2,
+    "user_id": 2,
+    "user_login": "user2",
+    "tasks_created": [],
+    "number_of_itemsets": 0,
+    "number_of_items": 0,
+    "number_of_media": 0,
+    "status": "error",
+    "error_message": "Failed to export data from WordPress"
+  }
+]
+```
+
 ## Bulk Import Process
 
 The migration process follows these steps:
@@ -348,3 +426,4 @@ This approach ensures that:
 - Importers are created only once, not once per site
 - Import jobs are created for each channel during its migration
 - Each import job is properly configured with the correct XML file, site name, and owner ID
+- If there's an error exporting data from WordPress, the migration process continues with the next channel and records the error in the JSON report

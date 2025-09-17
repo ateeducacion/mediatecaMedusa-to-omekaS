@@ -26,10 +26,13 @@ class CSVReader:
         self.csv_file_path = csv_file_path
         self.logger = logging.getLogger(__name__)
     
-    def read_channels(self) -> List[Dict[str, Any]]:
+    def read_channels(self, ignore_comments: bool = False) -> List[Dict[str, Any]]:
         """
         Read channel information from the CSV file.
         
+        Args:
+            ignore_comments: Whether to ignore lines starting with '#' (default: False).
+            
         Returns:
             A list of dictionaries containing channel information.
             Each dictionary has the following keys:
@@ -42,22 +45,40 @@ class CSVReader:
         
         try:
             with open(self.csv_file_path, 'r', encoding='utf-8') as csv_file:
-                csv_reader = csv.DictReader(csv_file)
+                # If ignore_comments is True, filter out lines starting with '#'
+                if ignore_comments:
+                    # Read all lines and filter out comment lines
+                    lines = [line for line in csv_file if not line.strip().startswith('#')]
+                    # Create a new csv reader from the filtered lines
+                    csv_reader = csv.DictReader(lines)
+                else:
+                    csv_reader = csv.DictReader(csv_file)
                 
                 # Check if required columns exist
                 required_columns = ['name', 'url', 'slug', 'editor']
-                if not all(column in csv_reader.fieldnames for column in required_columns):
-                    missing_columns = [col for col in required_columns if col not in csv_reader.fieldnames]
+                if not csv_reader.fieldnames or not all(column in csv_reader.fieldnames for column in required_columns):
+                    missing_columns = [col for col in required_columns if not csv_reader.fieldnames or col not in csv_reader.fieldnames]
                     self.logger.error(f"CSV file is missing required columns: {', '.join(missing_columns)}")
                     raise ValueError(f"CSV file is missing required columns: {', '.join(missing_columns)}")
                 
                 # Read each row
                 for row in csv_reader:
+                    # Skip rows with missing required fields
+                    if 'name' not in row or 'url' not in row or 'editor' not in row:
+                        self.logger.warning(f"Skipping row with missing required fields: {row}")
+                        continue
+                    
+                    # Handle None values
+                    name = row['name'].strip() if row['name'] else ''
+                    url = row['url'].strip() if row['url'] else ''
+                    slug = row['slug'].strip() if row.get('slug') else ''
+                    editor = row['editor'].strip() if row['editor'] else ''
+                    
                     channel = {
-                        'name': row['name'].strip(),
-                        'url': row['url'].strip(),
-                        'slug': row['slug'].strip() if row['slug'].strip() else self._generate_slug(row['name']),
-                        'editor': row['editor'].strip()
+                        'name': name,
+                        'url': url,
+                        'slug': slug if slug else self._generate_slug(name),
+                        'editor': editor
                     }
                     
                     # Validate channel data

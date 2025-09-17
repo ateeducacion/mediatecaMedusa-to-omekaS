@@ -60,9 +60,9 @@ def main():
         )
 
         # Normal migration process
-        # Read CSV file
+        # Read CSV file, ignoring lines that start with '#'
         csv_reader = CSVReader(args.csv)
-        channels = csv_reader.read_channels()
+        channels = csv_reader.read_channels(ignore_comments=True)
         logger.info(f"Found {len(channels)} channels to migrate")
 
         # Initialize JSON reporter if output file is specified

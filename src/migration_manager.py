@@ -104,17 +104,19 @@ class MigrationManager:
         self._add_user_to_site(site['o:id'], user['o:id'])
         
         # Step 4: Export WordPress data
-        xml_file = self._export_wordpress_data(channel['url'])
+        xml_file, export_success = self._export_wordpress_data(channel['url'])
         
         # Step 5: Create bulk import jobs for this channel
         import_jobs = []
-        if self.importers:
+        if self.importers and export_success:
             import_jobs = self._create_bulk_import_jobs_for_channel(
                 channel_name=channel['name'],
                 site_id=site['o:id'],
                 user_id=user['o:id'],
                 xml_file=xml_file
             )
+        elif not export_success:
+            self.logger.warning(f"Skipping import job creation for channel: {channel['name']} due to export failure")
         
         # Return migration results
         results = {
@@ -123,10 +125,12 @@ class MigrationManager:
             'user': user,
             'xml_file': xml_file,
             'import_jobs': import_jobs,
-            'importers': self.importers  # Include importers for reference
+            'importers': self.importers,  # Include importers for reference
+            'status': 'success' if export_success else 'error',
+            'error_message': 'Failed to export data from WordPress' if not export_success else None
         }
         
-        self.logger.info(f"Migration completed for channel: {channel['name']}")
+        self.logger.info(f"Migration completed for channel: {channel['name']} with status: {results['status']}")
         
         return results
     
@@ -205,7 +209,7 @@ class MigrationManager:
         
         return site
     
-    def _export_wordpress_data(self, channel_url: str) -> str:
+    def _export_wordpress_data(self, channel_url: str) -> tuple:
         """
         Export data from a WordPress channel.
         
@@ -213,16 +217,21 @@ class MigrationManager:
             channel_url: The URL of the WordPress channel.
             
         Returns:
-            The path to the exported XML file.
+            A tuple containing:
+                - The path to the exported XML file
+                - A status flag indicating success (True) or failure (False)
         """
         self.logger.info(f"Exporting data from WordPress: {channel_url}")
         
         # Export data
-        xml_file = self.wp_exporter.export_channel_data(channel_url, self.exports_dir)
+        xml_file, success = self.wp_exporter.export_channel_data(channel_url, self.exports_dir)
         
-        self.logger.info(f"Data exported to: {xml_file}")
+        if success:
+            self.logger.info(f"Data exported successfully to: {xml_file}")
+        else:
+            self.logger.warning(f"Failed to export data from WordPress: {channel_url}. Continuing with migration process.")
         
-        return xml_file
+        return xml_file, success
     
     def _create_bulk_import_jobs_for_channel(self, channel_name: str, site_id: int, user_id: int, xml_file: str) -> List[Dict[str, Any]]:
         """

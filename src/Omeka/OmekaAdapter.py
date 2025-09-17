@@ -250,7 +250,7 @@ class OmekaAdapter:
         
         # Update reader configuration with file information
         reader_config.update({
-            "filename": f"/var/www/html/files/preload/{file_name}",
+            "filename": f"/var/www/html/omeka-s/files/preload/{file_name}",
             "file": {
                 "name": file_name,
                 "full_path": file_name,
@@ -259,6 +259,7 @@ class OmekaAdapter:
                 "size": file_size
             }
         })
+        self.logger.info(f"FILENAME: {reader_config['filename']}")
         
         # Update SiteId parameter in xsl_params if provided
         if site_id is not None and "xsl_params" in reader_config and "SiteId" in reader_config["xsl_params"]:

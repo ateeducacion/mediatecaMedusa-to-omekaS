@@ -101,6 +101,8 @@ class JSONReporter:
         user = migration_result.get('user', {})
         xml_file = migration_result.get('xml_file', '')
         import_jobs = migration_result.get('import_jobs', [])
+        status = migration_result.get('status', 'success')
+        error_message = migration_result.get('error_message', None)
         
         # Count XML tags
         tag_counts = self.count_xml_tags(xml_file)
@@ -123,7 +125,9 @@ class JSONReporter:
             ],
             'number_of_itemsets': tag_counts['number_of_itemsets'],
             'number_of_items': tag_counts['number_of_items'],
-            'number_of_media': tag_counts['number_of_media']
+            'number_of_media': tag_counts['number_of_media'],
+            'status': status,
+            'error_message': error_message
         }
         
         # Read existing data
