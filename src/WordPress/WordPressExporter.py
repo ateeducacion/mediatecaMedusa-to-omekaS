@@ -11,6 +11,7 @@ Date: 23-07-2025
 
 import logging
 import os
+import subprocess
 from typing import Optional
 from common.CAS_login import cas_login
 
@@ -76,6 +77,9 @@ class WordPressExporter:
             with open(output_file, 'wb') as f:
                 f.write(response.content)
             
+            # Post-process the file to remove null characters
+            self._remove_null_characters(output_file)
+            
             self.logger.info(f"Data exported successfully to: {output_file}")
             return output_file, True
             
@@ -85,3 +89,45 @@ class WordPressExporter:
             with open(output_file, 'w') as f:
                 f.write(f"<!-- Error exporting data: {str(e)} -->")
             return output_file, False
+    
+    def _remove_null_characters(self, file_path: str) -> None:
+        """
+        Remove null characters from the XML file using the tr command.
+        
+        Args:
+            file_path: The path to the XML file to process.
+        """
+        try:
+            self.logger.info(f"Removing null characters from: {file_path}")
+            
+            # Create a temporary file path
+            temp_file = file_path + ".tmp"
+            
+            # Use tr command to remove null characters
+            # tr -d '\000' < input_file > output_file
+            with open(file_path, 'rb') as input_file:
+                with open(temp_file, 'wb') as output_file:
+                    # Run tr command to remove null characters
+                    process = subprocess.run(
+                        ['tr', '-d', '\\000'],
+                        stdin=input_file,
+                        stdout=output_file,
+                        stderr=subprocess.PIPE,
+                        check=True
+                    )
+            
+            # Replace the original file with the cleaned file
+            os.replace(temp_file, file_path)
+            
+            self.logger.info(f"Successfully removed null characters from: {file_path}")
+            
+        except subprocess.CalledProcessError as e:
+            self.logger.error(f"Error running tr command on {file_path}: {e.stderr.decode()}")
+            # Clean up temporary file if it exists
+            if os.path.exists(temp_file):
+                os.remove(temp_file)
+        except Exception as e:
+            self.logger.error(f"Error removing null characters from {file_path}: {str(e)}")
+            # Clean up temporary file if it exists
+            if os.path.exists(temp_file):
+                os.remove(temp_file)
