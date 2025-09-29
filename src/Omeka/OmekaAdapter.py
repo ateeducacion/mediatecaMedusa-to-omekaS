@@ -86,8 +86,8 @@ class OmekaAdapter:
             "o:email": email,
             "o:role": role,
             "o:is_active": True,
-            "limit_to_granted_sites": True,
-            "limit_to_own_assets": True
+            "o-module-isolatedsites:limit_to_granted_sites": True,
+            "o-module-isolatedsites:limit_to_own_assets": True
         }
         
         self.logger.debug(f"Creating user: {name} with email: {email} and role: {role}")
