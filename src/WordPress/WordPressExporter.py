@@ -78,7 +78,7 @@ class WordPressExporter:
                 f.write(response.content)
             
             # Post-process the file to remove null characters
-            self._remove_null_characters(output_file)
+            #self._remove_null_characters(output_file)
             
             self.logger.info(f"Data exported successfully to: {output_file}")
             return output_file, True
