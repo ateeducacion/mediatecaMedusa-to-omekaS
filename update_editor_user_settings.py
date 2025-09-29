@@ -49,7 +49,7 @@ class UserSettingsUpdater:
         endpoint = f"{self.omeka_adapter.api_url}/users"
         
         self.logger.info("Fetching all users from Omeka S")
-        response = self.omeka_adapter._make_request("GET", endpoint, params={})
+        response = self.omeka_adapter._make_request("GET", endpoint, params={per_page: 9999})
         
         if response.status_code == 200:
             users = response.json()
