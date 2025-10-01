@@ -79,6 +79,16 @@ if ($adminUser) {
 $totalChannels = count($migrationData);
 echo "Processing $totalChannels channels...\n";
 
+// Initialize or read existing output data
+$outputData = [];
+if (file_exists($outputFile)) {
+    $existingContent = file_get_contents($outputFile);
+    $existingData = json_decode($existingContent, true);
+    if (json_last_error() === JSON_ERROR_NONE && is_array($existingData)) {
+        $outputData = $existingData;
+    }
+}
+
 foreach ($migrationData as $index => &$channel) {
     $channelName = $channel['name'];
     $siteId = $channel['site_id'];
@@ -121,11 +131,17 @@ foreach ($migrationData as $index => &$channel) {
     // Add counts to the channel data
     $channel['omeka_itemsets_count'] = $counts['itemSetsCount'];
     $channel['omeka_items_count'] = $counts['itemsCount'];
+    $channel['omeka_media_count'] = $counts['mediaCount'];
+    
+    // Write this channel's data to the output file immediately
+    $outputData[$index] = $channel;
+    echo "  Writing channel data to output file: $outputFile\n";
+    file_put_contents($outputFile, json_encode(array_values($outputData), JSON_PRETTY_PRINT));
+    echo "  Channel (" . ($index+1) . "/$totalChannels) data written successfully.\n";
 }
 
-// Write updated JSON to output file
-echo "Writing output file: $outputFile\n";
-file_put_contents($outputFile, json_encode($migrationData, JSON_PRETTY_PRINT));
+// Final confirmation
+echo "All channel data has been written to output file: $outputFile\n";
 
 echo "Migration tasks processing completed successfully.\n";
 exit(0);
