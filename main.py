@@ -35,6 +35,7 @@ def parse_arguments():
     parser.add_argument('--log-level', default='INFO', choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'],
                         help='Set the logging level')
     parser.add_argument('--output-file', type=str, help='Path to the output JSON file with migration results')
+    parser.add_argument('--from-date', type=str, help='Date from which to migrate items (format: YYYY-MM-DD)')
     return parser.parse_args()
 
 def main():
@@ -56,7 +57,8 @@ def main():
             key_credential=args.key_credential,
             config_file=args.config,
             logger=logger,
-            as_task=True
+            as_task=True,
+            from_date=args.from_date
         )
 
         # Normal migration process

@@ -65,7 +65,8 @@
               "postType": "attachment",
               "postParent": "0",
               "Media": "0",
-              "SiteId": "0"
+              "SiteId": "0",
+              "min_post_date":""
           }
         },
         "processor": {
@@ -112,7 +113,8 @@
              "postType":"attachment",
              "postParent":"0",
              "Media":"1",
-             "SiteId": "0"
+             "SiteId": "0",
+             "min_post_date":""
           }
         },
         "processor": {

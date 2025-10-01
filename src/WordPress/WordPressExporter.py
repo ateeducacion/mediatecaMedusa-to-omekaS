@@ -31,13 +31,14 @@ class WordPressExporter:
         self.password = password
         self.logger = logger or logging.getLogger(__name__)
     
-    def export_channel_data(self, channel_url: str, output_dir: str) -> tuple:
+    def export_channel_data(self, channel_url: str, output_dir: str, from_date: str = None) -> tuple:
         """
         Export data from a WordPress channel.
         
         Args:
             channel_url: The URL of the WordPress channel.
             output_dir: The directory to save the exported data.
+            from_date: Optional date filter in YYYY-MM format. If provided, only exports attachments from this date.
             
         Returns:
             A tuple containing:
@@ -64,6 +65,13 @@ class WordPressExporter:
                 'download': 'true',
                 'content': 'all'  # options: all, posts, pages, attachment
             }
+            
+            # If from_date is provided, filter by attachments from that date
+            if from_date:
+                self.logger.info(f"Filtering export by date: {from_date}")
+                params['content'] = 'attachment'
+                params['attachment_start_date'] = from_date
+                params['attachment_end_date'] = from_date
             
             self.logger.info(f"Exporting data from WordPress: {channel_url}")
             response = session.get(export_url, params=params)

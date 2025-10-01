@@ -23,7 +23,8 @@ class MigrationManager:
                  key_identity: Optional[str] = None, key_credential: Optional[str] = None,
                  config_file: Optional[str] = None,
                  logger: Optional[logging.Logger] = None,
-                 as_task: bool = True):  # Changed default to True
+                 as_task: bool = True,
+                 from_date: Optional[str] = None):  # Changed default to True
         """
         Initialize the migration manager.
         
@@ -36,13 +37,15 @@ class MigrationManager:
             config_file: Path to the configuration file (optional).
             logger: A logger instance (optional).
             as_task: Whether to save bulk imports as tasks (True) or execute immediately (False).
+            from_date: Optional date filter in YYYY-MM-DD format for filtering items to migrate.
         """
         self.omeka_adapter = OmekaAdapter(omeka_url, key_identity, key_credential, logger)
-        self.wp_exporter = WordPressExporter(wp_username, wp_password)
+        self.wp_exporter = WordPressExporter(wp_username, wp_password, logger)
         self.logger = logger or logging.getLogger(__name__)
         self.config = None
         self.importers = []
         self.as_task = as_task
+        self.from_date = from_date
         
         # Create exports directory if it doesn't exist
         self.exports_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'exports')
@@ -223,8 +226,14 @@ class MigrationManager:
         """
         self.logger.info(f"Exporting data from WordPress: {channel_url}")
         
+        # Truncate date from YYYY-MM-DD to YYYY-MM for WordPress export (doesn't support day)
+        wp_from_date = None
+        if self.from_date:
+            wp_from_date = self.from_date[:7]  # Get only YYYY-MM
+            self.logger.info(f"Truncating date for WordPress export: {self.from_date} -> {wp_from_date}")
+        
         # Export data
-        xml_file, success = self.wp_exporter.export_channel_data(channel_url, self.exports_dir)
+        xml_file, success = self.wp_exporter.export_channel_data(channel_url, self.exports_dir, wp_from_date)
         
         if success:
             self.logger.info(f"Data exported successfully to: {xml_file}")
@@ -254,6 +263,12 @@ class MigrationManager:
         
         import_jobs = []
         
+        # Convert from_date to min_post_date format if provided (YYYY-MM-DD -> YYYY-MM-DD 00:00:00)
+        min_post_date = None
+        if self.from_date:
+            min_post_date = f"{self.from_date} 00:00:00"
+            self.logger.info(f"Using min_post_date filter: {min_post_date}")
+        
         for importer in self.importers:
             # Create import job for this channel and importer, passing the site_id
             # to update the SiteId parameter in the import job's xsl_params
@@ -262,7 +277,8 @@ class MigrationManager:
                 xml_file=xml_file,
                 site_name=channel_name,
                 owner_id=user_id,
-                site_id=site_id  # Pass the site_id to update the SiteId parameter
+                site_id=site_id,  # Pass the site_id to update the SiteId parameter
+                min_post_date=min_post_date  # Pass the min_post_date filter
             )
             import_jobs.append(import_job)
             

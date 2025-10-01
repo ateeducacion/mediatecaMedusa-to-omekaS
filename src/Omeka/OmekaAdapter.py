@@ -211,7 +211,7 @@ class OmekaAdapter:
             self.logger.error(f"Response: {response.text}")
             response.raise_for_status()
     
-    def create_bulk_import(self, importer_id: int, xml_file: str, site_name: str, owner_id: int = None, site_id: int = None) -> Dict[str, Any]:
+    def create_bulk_import(self, importer_id: int, xml_file: str, site_name: str, owner_id: int = None, site_id: int = None, min_post_date: str = None) -> Dict[str, Any]:
         """
         Create a new bulk import job in Omeka S.
         
@@ -221,6 +221,7 @@ class OmekaAdapter:
             site_name: The name of the site for the comment.
             owner_id: The ID of the owner for the imported resources (optional).
             site_id: The ID of the site for the SiteId parameter in xsl_params (optional).
+            min_post_date: The minimum post date filter in format 'yyyy-mm-dd HH:MM:SS' (optional).
             
         Returns:
             The created bulk import job data.
@@ -265,6 +266,11 @@ class OmekaAdapter:
         if site_id is not None and "xsl_params" in reader_config and "SiteId" in reader_config["xsl_params"]:
             self.logger.info(f"Setting SiteId parameter to '{site_id}' for import job")
             reader_config["xsl_params"]["SiteId"] = str(site_id)
+        
+        # Update min_post_date parameter in xsl_params if provided
+        if min_post_date is not None and "xsl_params" in reader_config:
+            self.logger.info(f"Setting min_post_date parameter to '{min_post_date}' for import job")
+            reader_config["xsl_params"]["min_post_date"] = min_post_date
         
         # Update processor configuration with owner information
         if owner_id:
