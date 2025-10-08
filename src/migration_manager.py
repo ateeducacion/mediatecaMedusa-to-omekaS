@@ -206,7 +206,7 @@ class MigrationManager:
         self.logger.info(f"Adding user (ID: {user_id}) to site (ID: {site_id})")
         
         # Add user to site
-        site = self.omeka_adapter.add_user_to_site(site_id, user_id, "viewer")
+        site = self.omeka_adapter.add_user_to_site(site_id, user_id, "editor")
         
         self.logger.info(f"User (ID: {user_id}) added to site (ID: {site_id})")
         
