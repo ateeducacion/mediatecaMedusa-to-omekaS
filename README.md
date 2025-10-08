@@ -75,7 +75,11 @@ Or install packages in user space:
 ```
 python install_requirements.py --user
 ```
-
+### Virtual Environment
+To setup a python virtual environment for Poweshell run:
+```
+setup_venv.ps1
+```
 ## Usage
 
 ### Quick Start
@@ -427,3 +431,4 @@ This approach ensures that:
 - Import jobs are created for each channel during its migration
 - Each import job is properly configured with the correct XML file, site name, and owner ID
 - If there's an error exporting data from WordPress, the migration process continues with the next channel and records the error in the JSON report
+
