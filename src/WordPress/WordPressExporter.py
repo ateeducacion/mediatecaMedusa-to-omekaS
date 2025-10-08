@@ -74,8 +74,9 @@ class WordPressExporter:
                 params['attachment_end_date'] = from_date
             
             self.logger.info(f"Exporting data from WordPress: {channel_url}")
-            response = session.get(export_url, params=params)
             
+            response = session.get(export_url, params=params)
+
             if response.status_code != 200:
                 self.logger.error(f"Failed to export data from WordPress: {channel_url}. Status code: {response.status_code}")
                 self.logger.error(f"Response: {response.text}")

@@ -186,7 +186,7 @@ class MigrationManager:
             return existing_user
         
         # Create user
-        user = self.omeka_adapter.create_user(username, email, "editor")
+        user = self.omeka_adapter.create_user(username, email, "site_editor")
         
         self.logger.info(f"User created: {username} (ID: {user['o:id']})")
         

@@ -125,6 +125,12 @@ foreach ($migrationData as $index => &$channel) {
     // Add item sets with matching dcterms:subject to the site
     addItemSetsToSite($siteId, $api, $entityManager);
 
+    // Add site_id to user's default_item_sites
+    if (isset($channel['user_id'])) {
+        $userId = $channel['user_id'];
+        addSiteToUserDefaultItemSites($userId, $siteId, $serviceLocator);
+    }
+
     // Get item sets and items count for the site
     $counts = getItemCounts($siteId, $api);
 
@@ -449,4 +455,62 @@ function cleanItemSetForUpdate(\Omeka\Api\Representation\ItemSetRepresentation $
     );
 
     return $data;
+}
+
+/**
+ * Add site_id to user's default_item_sites array in user settings.
+ * Avoids duplicates by checking if the site is already in the array.
+ *
+ * @param int $userId The ID of the user
+ * @param int $siteId The ID of the site to add
+ * @param ServiceLocatorInterface $serviceLocator The service locator
+ * @return bool True if successful, false otherwise
+ */
+function addSiteToUserDefaultItemSites($userId, $siteId, $serviceLocator) {
+    try {
+        echo "    Adding site (ID: $siteId) to user's (ID: $userId) default_item_sites...\n";
+        
+        // Get the UserSettings service
+        $userSettings = $serviceLocator->get('Omeka\Settings\User');
+        
+        // Get the entity manager to find the user
+        $entityManager = $serviceLocator->get('Omeka\EntityManager');
+        $userEntity = $entityManager->find('Omeka\Entity\User', $userId);
+        
+        if (!$userEntity) {
+            echo "    Error: User not found: $userId\n";
+            return false;
+        }
+        
+        // Set the target user for user settings
+        $userSettings->setTargetId($userId);
+        
+        // Get current default_item_sites array or initialize as empty array
+        $defaultItemSites = $userSettings->get('default_item_sites', []);
+        
+        // Ensure it's an array
+        if (!is_array($defaultItemSites)) {
+            $defaultItemSites = [];
+        }
+        
+        // Check if site_id is already in the array to avoid duplicates
+        if (in_array($siteId, $defaultItemSites)) {
+            echo "    Site (ID: $siteId) already in user's default_item_sites. No update needed.\n";
+            return true;
+        }
+        
+        // Add the site_id to the array
+        $defaultItemSites[] = $siteId;
+        
+        // Update the settings using the UserSettings service
+        $userSettings->set('default_item_sites', $defaultItemSites);
+        
+        echo "    Successfully added site (ID: $siteId) to user's (ID: $userId) default_item_sites.\n";
+        echo "    User's default_item_sites now contains: " . implode(', ', $defaultItemSites) . "\n";
+        
+        return true;
+    } catch (Exception $e) {
+        echo "    Error adding site to user's default_item_sites: " . $e->getMessage() . "\n";
+        return false;
+    }
 }
