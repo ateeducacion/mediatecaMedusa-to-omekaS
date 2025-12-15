@@ -145,6 +145,7 @@ The script automatically assigns item sets to sites based on the dcterms:subject
 1. After executing all tasks for a channel, the script searches for item sets with dcterms:subject matching the site ID
 2. These item sets are added to the site's o:site_item_set field, making them visible in the site
 3. The dcterms:subject field is then cleared from these item sets to prevent duplicate assignments
+4. Finally, empty item sets 
 
 This process ensures that item sets created during the import process are properly associated with their respective sites.
 
@@ -179,3 +180,10 @@ This script is designed to be used after the initial migration process has creat
 - Item sets with dcterms:subject matching the site ID are automatically added to the site and the subject field is cleared.
 - The script uses the admin user (ID 1) for API operations to ensure it has sufficient permissions.
 - The admin user must exist in the Omeka S installation for the script to work properly.
+
+
+## Site configuration
+
+1. Site settings
+
+2. Theme settings

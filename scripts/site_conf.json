@@ -1,0 +1,854 @@
+{
+    "site_id": 1,
+    "timestamp": "2025-12-15 08:44:50",
+    "site_data": {
+        "site": {
+            "id": 1,
+            "slug": "ceo-san-borondon",
+            "title": "Área de Tecnología Educativa",
+            "theme": "freedom-ate"
+        },
+        "basic_info": {
+            "summary": null,
+            "is_public": true,
+            "assign_new_items": false,
+            "created": {
+                "@value": "2025-05-05T09:56:52+00:00",
+                "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+            },
+            "modified": {
+                "@value": "2025-12-15T08:39:00+00:00",
+                "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+            },
+            "owner": {
+                "@id": "http:///api/users/1",
+                "o:id": 1
+            }
+        },
+        "site_settings": {
+            "advancedresourcetemplate_block_metadata_components": [
+                "value_label"
+            ],
+            "advancedresourcetemplate_block_metadata_fields": {
+                "metadata": {
+                    "dcterms:title": "",
+                    "dcterms:description": "",
+                    "dcterms:date": "",
+                    "dcterms:relation": ""
+                }
+            },
+            "advancedresourcetemplate_block_metadata_show_info": "none",
+            "advancedresourcetemplate_block_metadata_show_label": false,
+            "advancedresourcetemplate_block_metadata_show_locale": false,
+            "advancedresourcetemplate_properties_as_search_whitelist": [
+                "dcterms:isPartOf",
+                "dcterms:relation"
+            ],
+            "advancedresourcetemplate_properties_display": [
+                "value_search"
+            ],
+            "advancedresourcetemplate_properties_display_site": "site",
+            "attachment_link_type": "item",
+            "blockplus_breadcrumbs_collections_url": "",
+            "blockplus_breadcrumbs_crumbs": [
+                "home",
+                "collections",
+                "itemset",
+                "itemsetstree",
+                "current"
+            ],
+            "blockplus_breadcrumbs_homepage": "0",
+            "blockplus_breadcrumbs_prepend": [],
+            "blockplus_breadcrumbs_separator": "",
+            "blockplus_items_order_for_itemsets": [],
+            "blockplus_page_model_rights": "0",
+            "blockplus_page_model_skip_blockplus": "0",
+            "blockplus_page_models": [],
+            "blockplus_prevnext_item_sets_query": "",
+            "blockplus_prevnext_items_query": "",
+            "browse_attached_items": "0",
+            "browse_body_property_term": "",
+            "browse_defaults_public_items": {
+                "sort_by": "created",
+                "sort_order": "desc"
+            },
+            "browse_heading_property_term": "",
+            "bulkexport_format_fields": "label",
+            "bulkexport_format_generic": "string",
+            "bulkexport_format_resource": "id",
+            "bulkexport_format_resource_property": "dcterms:identifier",
+            "bulkexport_format_uri": "uri_label",
+            "bulkexport_language": "",
+            "bulkexport_limit": "1000",
+            "bulkexport_metadata": [
+                "url",
+                "o:resource_class",
+                "properties_max_500"
+            ],
+            "bulkexport_metadata_exclude": [
+                "properties_min_500"
+            ],
+            "bulkexport_template": "",
+            "bulkexport_views": [
+                "item_show"
+            ],
+            "disable_jsonld_embed": "0",
+            "diskquota_site_quota": 1000,
+            "exclude_resources_not_in_site": "0",
+            "favicon": "23",
+            "filter_locale_values": "0",
+            "guest_capabilities": "",
+            "guest_dashboard_label": "My dashboard",
+            "guest_login_html_after": "",
+            "guest_login_html_before": "",
+            "guest_login_text": "Log in",
+            "guest_login_with_register": "0",
+            "guest_login_without_form": "0",
+            "guest_message_confirm_email": "<p>Hi {user_name},</p>\n\n<p>You have registered for an account on <a href=\"%7Bsite_url%7D\">{site_title}</a> ({main_title}).</p>\n\n<p>Please confirm your registration by following this link: <a href=\"%7Btoken_url%7D\"> {token_url}</a></p>\n\n<p>If you did not request to join {main_title} / {site_title}, please disregard this email.</p>\n",
+            "guest_message_confirm_email_site": "Your email \"{user_email}\" is confirmed for {site_title}.",
+            "guest_message_confirm_email_subject": "[{site_title}] Confirm email",
+            "guest_message_confirm_register_moderate_site": "Thank you for registering. Please check your email for a confirmation message. Once you have confirmed your request and we have confirmed it, you will be able to log in.",
+            "guest_message_confirm_register_site": "Thank you for registering. Please check your email for a confirmation message. Once you have confirmed your request, you will be able to log in.",
+            "guest_message_confirm_registration_email": "<p>Hi {user_name},</p>\n\n<p>We are happy to open your account on <a href=\"%7Bsite_url%7D\">{site_title}</a> ({main_title}).</p>\n\n<p>Please confirm your email by following this link: <a href=\"%7Btoken_url%7D\">{token_url}</a>.</p>\n\n<p>You can now log in and discover the site.</p>\n",
+            "guest_message_confirm_registration_email_subject": "[{site_title}] Account open",
+            "guest_message_notify_registration_email": "<p>Hi,</p>\n\n<p>A new user, {user_name}, is registering on <a href=\"%7Bsite_url%7D\">{site_title}</a> ({main_title}).</p>\n\n<p>You may moderate this email: {user_email}.</p>\n\n<p>This is an automatic message.</p>\n",
+            "guest_message_notify_registration_email_subject": "[{site_title}] A user is registering",
+            "guest_message_update_email": "<p>Hi {user_name},</p>\n\n<p>You have requested to update email on <a href=\"%7Bsite_url%7D\">{site_title}</a> ({main_title}).</p>\n\n<p>Please confirm your email by following this link: <a href=\"%7Btoken_url%7D\">{token_url}</a>.</p>\n\n<p>If you did not request to update your email on {main_title}, please disregard this email.</p>\n",
+            "guest_message_update_email_subject": "[{site_title}] Confirm email",
+            "guest_notify_register": [],
+            "guest_redirect": "site",
+            "guest_register_html_after": "",
+            "guest_register_html_before": "",
+            "guest_register_text": "Register",
+            "guest_short_capabilities": "",
+            "guest_show_user_bar_for_guest": "0",
+            "guest_terms_page": "terms-and-conditions",
+            "guest_terms_text": "<p>I agree the terms and conditions.</p>\n",
+            "hierarchy_group_resources": "1",
+            "hierarchy_show_count": "1",
+            "hierarchy_show_label": "1",
+            "item_media_embed": "0",
+            "locale": "",
+            "property_label_information": "term",
+            "search_resource_names": [
+                "site_pages",
+                "items",
+                "item_sets"
+            ],
+            "search_restrict_templates": "0",
+            "search_type": "sitewide",
+            "show_attached_pages": "1",
+            "show_locale_label": "1",
+            "show_page_pagination": "0",
+            "show_user_bar": "-1",
+            "show_value_annotations": "",
+            "site_hierarchies": [
+                {
+                    "id": "1"
+                }
+            ],
+            "vocabulary_scope": ""
+        },
+        "theme_settings": {
+            "css_editor_css": "\r\n",
+            "css_editor_external_css": [],
+            "guest_navigation": [],
+            "subnav_display": "",
+            "theme_settings_default": {
+                "resource_page_blocks": {
+                    "items": {
+                        "main": [
+                            "mediaEmbeds",
+                            "values",
+                            "hierarchy",
+                            "itemSets",
+                            "sitePages",
+                            "mediaList",
+                            "linkedResources"
+                        ]
+                    },
+                    "item_sets": {
+                        "main": [
+                            "values",
+                            "hierarchy"
+                        ]
+                    },
+                    "media": {
+                        "main": [
+                            "mediaRender",
+                            "values"
+                        ]
+                    }
+                },
+                "accent_color": "#920b0b",
+                "nav_depth": "0",
+                "logo": "",
+                "banner": "",
+                "banner_height": "",
+                "banner_height_mobile": "",
+                "banner_position": "center",
+                "browse_body_truncation": "full",
+                "footer": "Powered by Omeka S"
+            },
+            "theme_settings_freedom": {
+                "primary_color": "#0000ff",
+                "header_layout": "inline",
+                "nav_depth": "2",
+                "logo": "",
+                "banner": "",
+                "banner_heading": "",
+                "banner_description": "",
+                "banner_content_position": "left",
+                "banner_width": "container",
+                "banner_height": "",
+                "banner_height_mobile": "",
+                "banner_v_position": "center",
+                "banner_h_position": "center",
+                "footer_logo": "",
+                "footer_site_info": "",
+                "footer_menu": "0",
+                "footer_menu_depth": "1",
+                "footer_content": "",
+                "footer_copyright": "<div>\n   <span>© Gobierno de Canarias</span>\n</div>\n<div>\n   <span><a href=\"https://www.gobiernodecanarias.org/principal/avisolegal.html\" target=\"_blank\" rel=\"noreferrer noopener\">Aviso legal</a></span>\n   <span><a href=\"https://www.gobiernodecanarias.org/eucd/politica_privacidad/index.html\" target=\"_blank\" rel=\"noreferrer noopener\">Política de privacidad</a></span>\n</div>\n<div></div>",
+                "facebook_url": "",
+                "twitter_url": "",
+                "linkedin_url": "",
+                "instagram_url": "",
+                "youtube_url": "",
+                "mastodon_url": "",
+                "image_decoration": [
+                    "media"
+                ],
+                "resource_tags": [
+                    "resource_class"
+                ],
+                "browse_layout": "togglegrid",
+                "truncate_body_property": "ellipsis",
+                "resource_page_blocks": {
+                    "items": {
+                        "main": [
+                            "description",
+                            "values",
+                            "itemSets"
+                        ],
+                        "right": [
+                            "mediaList"
+                        ]
+                    },
+                    "item_sets": {
+                        "main": [
+                            "breadcrumbs",
+                            "values"
+                        ]
+                    },
+                    "media": {
+                        "main": [
+                            "mediaRender",
+                            "resourceClass",
+                            "values"
+                        ]
+                    }
+                }
+            },
+            "theme_settings_freedom-ate": {
+                "primary_color": "#464646",
+                "secondary_color": "#053556",
+                "accent_color": "#053556",
+                "header_layout": "inline",
+                "nav_depth": "0",
+                "logo": "31",
+                "banner": "",
+                "banner_heading": "",
+                "banner_description": "",
+                "banner_content_position": "left",
+                "banner_width": "container",
+                "banner_height": "",
+                "banner_height_mobile": "",
+                "banner_v_position": "center",
+                "banner_h_position": "center",
+                "footer_logo": "",
+                "footer_site_info": "",
+                "footer_menu": "0",
+                "footer_menu_depth": "1",
+                "footer_content": "",
+                "footer_copyright": "                <div>\n                    <span>© Gobierno de Canarias</span>\n                </div>\n\n                <div>\n                    <span>\n                    <a href=\"%5C\">\n                        Aviso legal\n                    </a>\n                    </span>\n                    <span>\n                    <a href=\"%5C\">\n                        Política de privacidad\n                    </a>\n                    </span>\n                </div>",
+                "facebook_url": "",
+                "twitter_url": "",
+                "linkedin_url": "",
+                "instagram_url": "",
+                "youtube_url": "",
+                "mastodon_url": "",
+                "image_decoration": null,
+                "resource_tags": [
+                    "resource_class"
+                ],
+                "browse_layout": "grid",
+                "truncate_body_property": "ellipsis",
+                "resource_page_blocks": {
+                    "items": {
+                        "main": [
+                            "mediaEmbeds"
+                        ],
+                        "right": [
+                            "metadata",
+                            "itemSets"
+                        ]
+                    },
+                    "item_sets": {
+                        "main": []
+                    },
+                    "media": {
+                        "main": [
+                            "values",
+                            "mediaRender"
+                        ],
+                        "right": [
+                            "downloadPrimary"
+                        ]
+                    }
+                },
+                "header_menu": "1"
+            }
+        },
+        "item_pool": [],
+        "site_pages": [],
+        "site_item_sets": [
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1237",
+                    "o:id": 1237
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1240",
+                    "o:id": 1240
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1242",
+                    "o:id": 1242
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1267",
+                    "o:id": 1267
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1272",
+                    "o:id": 1272
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1292",
+                    "o:id": 1292
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1296",
+                    "o:id": 1296
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1297",
+                    "o:id": 1297
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1298",
+                    "o:id": 1298
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1299",
+                    "o:id": 1299
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1308",
+                    "o:id": 1308
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1316",
+                    "o:id": 1316
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1317",
+                    "o:id": 1317
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1333",
+                    "o:id": 1333
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1334",
+                    "o:id": 1334
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1335",
+                    "o:id": 1335
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1336",
+                    "o:id": 1336
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1338",
+                    "o:id": 1338
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1339",
+                    "o:id": 1339
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1340",
+                    "o:id": 1340
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1341",
+                    "o:id": 1341
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1343",
+                    "o:id": 1343
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1351",
+                    "o:id": 1351
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1352",
+                    "o:id": 1352
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1353",
+                    "o:id": 1353
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1354",
+                    "o:id": 1354
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1355",
+                    "o:id": 1355
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1356",
+                    "o:id": 1356
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1362",
+                    "o:id": 1362
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1364",
+                    "o:id": 1364
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1365",
+                    "o:id": 1365
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1366",
+                    "o:id": 1366
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1367",
+                    "o:id": 1367
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1368",
+                    "o:id": 1368
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1369",
+                    "o:id": 1369
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1374",
+                    "o:id": 1374
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1375",
+                    "o:id": 1375
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1377",
+                    "o:id": 1377
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1381",
+                    "o:id": 1381
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1383",
+                    "o:id": 1383
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1384",
+                    "o:id": 1384
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1387",
+                    "o:id": 1387
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1388",
+                    "o:id": 1388
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1389",
+                    "o:id": 1389
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1390",
+                    "o:id": 1390
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1391",
+                    "o:id": 1391
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1393",
+                    "o:id": 1393
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1394",
+                    "o:id": 1394
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1395",
+                    "o:id": 1395
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1396",
+                    "o:id": 1396
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1397",
+                    "o:id": 1397
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1398",
+                    "o:id": 1398
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1401",
+                    "o:id": 1401
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1405",
+                    "o:id": 1405
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1406",
+                    "o:id": 1406
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1407",
+                    "o:id": 1407
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1408",
+                    "o:id": 1408
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1409",
+                    "o:id": 1409
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1410",
+                    "o:id": 1410
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1413",
+                    "o:id": 1413
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1414",
+                    "o:id": 1414
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1415",
+                    "o:id": 1415
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1417",
+                    "o:id": 1417
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1418",
+                    "o:id": 1418
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1419",
+                    "o:id": 1419
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1420",
+                    "o:id": 1420
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1421",
+                    "o:id": 1421
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1422",
+                    "o:id": 1422
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1423",
+                    "o:id": 1423
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1424",
+                    "o:id": 1424
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1425",
+                    "o:id": 1425
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1426",
+                    "o:id": 1426
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1427",
+                    "o:id": 1427
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1428",
+                    "o:id": 1428
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1429",
+                    "o:id": 1429
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1430",
+                    "o:id": 1430
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1433",
+                    "o:id": 1433
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1434",
+                    "o:id": 1434
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1435",
+                    "o:id": 1435
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1436",
+                    "o:id": 1436
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1437",
+                    "o:id": 1437
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1438",
+                    "o:id": 1438
+                }
+            },
+            {
+                "o:item_set": {
+                    "@id": "http:///api/item_sets/1440",
+                    "o:id": 1440
+                }
+            }
+        ],
+        "navigation": [
+            {
+                "type": "page",
+                "data": {
+                    "label": "",
+                    "id": 25,
+                    "is_public": true
+                },
+                "links": []
+            },
+            {
+                "type": "browseItemSets",
+                "data": {
+                    "label": "",
+                    "query": ""
+                },
+                "links": []
+            }
+        ],
+        "navigation_raw": [
+            {
+                "type": "page",
+                "data": {
+                    "label": "",
+                    "id": 25,
+                    "is_public": true
+                },
+                "links": []
+            },
+            {
+                "type": "browseItemSets",
+                "data": {
+                    "label": "",
+                    "query": ""
+                },
+                "links": []
+            }
+        ]
+    }
+}
