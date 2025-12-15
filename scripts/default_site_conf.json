@@ -1,0 +1,80 @@
+{
+    "site_data": {
+        "site": {
+            "theme": "freedom-ate"
+        },
+        "site_settings": {
+            "advancedresourcetemplate_block_metadata_components": [
+                "value_label",
+                "value_term"
+            ],
+            "advancedresourcetemplate_block_metadata_fields": {
+                "metadata": {
+                    "dcterms:title": "",
+                    "dcterms:description": "",
+                    "dcterms:date": "",
+                    "dcterms:relation": ""
+                }
+            },
+            "advancedresourcetemplate_block_metadata_show_info": "none",
+            "advancedresourcetemplate_block_metadata_show_label": false,
+            "advancedresourcetemplate_block_metadata_show_locale": false,
+            "advancedresourcetemplate_properties_as_search_whitelist": [
+                "dcterms:isPartOf",
+                "dcterms:relation"
+            ],
+            "advancedresourcetemplate_properties_display": [
+                "value_search"
+            ],
+            "advancedresourcetemplate_properties_display_site": "site",
+            "locale": "",
+            "property_label_information": "term",
+            "search_resource_names": [
+                "site_pages",
+                "items",
+                "item_sets"
+            ],
+            "search_restrict_templates": "0",
+            "search_type": "sitewide",
+            "show_attached_pages": "1",
+            "show_locale_label": "1",
+            "show_page_pagination": "0",
+            "show_user_bar": "-1",
+            "show_value_annotations": ""
+        },
+        "theme_settings_freedom-ate": {
+            "primary_color": "#464646",
+            "secondary_color": "#053556",
+            "accent_color": "#053556",
+            "resource_tags": [
+                "resource_class"
+            ],
+            "browse_layout": "grid",
+            "truncate_body_property": "ellipsis",
+            "resource_page_blocks": {
+                "items": {
+                    "main": [
+                        "mediaEmbeds"
+                    ],
+                    "right": [
+                        "metadata",
+                        "itemSets"
+                    ]
+                },
+                "item_sets": {
+                    "main": []
+                },
+                "media": {
+                    "main": [
+                        "values",
+                        "mediaRender"
+                    ],
+                    "right": [
+                        "downloadPrimary"
+                    ]
+                }
+            },
+            "header_menu": "1"
+        }
+    }
+}
