@@ -754,7 +754,7 @@ function configureDefaultNavigation($siteId, $pageId, $api) {
             [
                 'type' => 'browseItemSets',
                 'data' => [
-                    'label' => '',
+                    'label' => 'Colecciones',
                     'query' => ''
                 ],
                 'links' => []
