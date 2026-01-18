@@ -1,10 +1,6 @@
 API en localhost:8080:
-    key_identity=hX2u9b3JvlztF5fh0sibuJk8evWTe6MV
-    key_credential=YdXCg8Ca0iS77puYEaMo5U8Qj4riPfgV
-
-API en localhost:8888
-    key_identity=BMyZWtodC7yHw8XucjunhByKH12t6J0B
-    key_credential=u3ZKLQkymmZGP0s7BiqHvmtrKDr0KQGX
+    key_identity=ui3lRCovebO1g08SCNeogSqDyVMXSXUO
+    key_credential=QVUmq4zj28yngVrevGFBI5Mc0OwGlLlV
 
 Pendiente:
     actualizar sites-item_sets
@@ -78,4 +74,66 @@ Prompt for php script for processing task
 
 
 NOmbres de centros en mayusculas
-58538
+
+Comandos para MIGRACIÓN:
+python main.py --config migration_config.json --omeka-url [host]/api --key-identity hX2u9b3JvlztF5fh0sibuJk8evWTe6MV --key-credential YdXCg8Ca0iS77puYEaMo5U8Qj4riPfgV --wp-username admincauce --csv example_channels.csv --output-file pruebas_cauce.json
+
+php run_migration_tasks.php --input-file ../../files/preload/pruebas_cauce.json --output-file volume/scripts/output.json --delete-tasks --config-site-file default_site_conf.json --default-nav --base-url http://localhost:8888
+
+
+/var/www/medusa/mediateca/wp-includes/class-wp-site-query.php
+
+
+HOJA DE RUTA MIGRACIÓN:
+ - Desarrollos y ajustes necesarios
+    - IsolatesSites
+        - UserRepresentation API para añadir campos del plugin: 
+    - Establecer opciones del tema
+        - hacemos fork del tema Freedom
+        - hacer plantilla común para items
+        - poner tema en pre
+    - Descargar última versión de IsolatesSites
+    - Script para establecer parametros correctos de IsolatesSites en pre
+    - Frontal del portal: Globallandingpage
+- Configuración inicial
+    - Modulos:
+        - 
+- Ajuste incial de datos
+    - Propiedad de item_sets
+        - Pasar a admin los [86] item_sets comunes
+- Portada
+    - Indicar sitios destacados
+    - Preparar páginas de condiciones de uso y/o terminos de servicio
+- Permisos de usuario:
+    - Necesitamos lista de directores para el alta de usuarios
+- Preparar correo a centros para informar de cambio de plataforma
+    - Dar posibilidad de rescindir el servicio
+    
+
+
+
+Información devuelta por CAS:
+Attribute	Value(s)	Type
+cn	[FRANCISCO JESÚS MATEOS DÍAZ]	Principal
+givenName	[FRANCISCO JESÚS]	Principal
+mail	[fmatdia@gobiernodecanarias.org]	Principal
+sn	[MATEOS DÍAZ]	Principal
+sn1	[MATEOS]	Principal
+sn2	[DÍAZ]	Principal
+uid_gsuite	[fmatdia]	Principal
+credentialType	[UsernamePasswordCredential]	Authentication
+authenticationDate	[1759306859]	Authentication
+authenticationMethod	[METADIRECTORIO]	Authentication
+successfulAuthenticationHandlers	[METADIRECTORIO]	Authentication
+
+
+Params para descarga por fechas:
+content
+attachment
+attachment_start_date
+2025-09
+attachment_end_date
+2025-09
+
+
+
