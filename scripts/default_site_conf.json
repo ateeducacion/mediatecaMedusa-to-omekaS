@@ -40,7 +40,7 @@
             "show_attached_pages": "1",
             "show_locale_label": "1",
             "show_page_pagination": "0",
-            "show_user_bar": "-1",
+            "show_user_bar": "1",
             "show_value_annotations": ""
         },
         "theme_settings_freedom-ate": {
