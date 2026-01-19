@@ -335,6 +335,7 @@ function deleteTask($taskId, $entityManager) {
 
 /**
  * Add item sets with matching dcterms:subject to the site and clear the subject field.
+ * Empty item sets (with no items) are deleted instead of being added.
  * Uses the API with admin user permissions.
  *
  * @param int $siteId The ID of the site
@@ -346,22 +347,22 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
     try {
         $entityManager->clear(); // to avoid cache issues
         echo "    Adding item sets to site (ID: $siteId) using API with admin user...\n";
-        
+
         // Get the site
         $site = $api->read('sites', $siteId)->getContent();
         if (!$site) {
             echo "    Error: Site not found: $siteId\n";
             return 0;
         }
-        
+
         // Get current site item sets
         $siteItemSets = $site->siteItemSets();
         $currentItemSetIds = [];
         foreach ($siteItemSets as $siteItemSet) {
             $currentItemSetIds[] = $siteItemSet->itemSet()->id();
         }
-        
-        
+
+
         // Find item sets with dcterms:subject matching the site ID
         $query = [
             'property' => [
@@ -372,21 +373,22 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
                 ]
             ]
         ];
-        
+
         $response = $api->search('item_sets', $query);
         $itemSets = $response->getContent();
-        
+
         if (empty($itemSets)) {
             echo "    No item sets found with dcterms:subject matching site ID: $siteId\n";
             return 0;
         }
-        
+
         // Add item sets to the site
         $addedCount = 0;
+        $deletedCount = 0;
         $updatedSiteData = [
             'o:site_item_set' => []
         ];
-        
+
         // Add existing site item sets
         $position = 1;
         foreach ($currentItemSetIds as $itemSetId) {
@@ -394,20 +396,37 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
                 'o:item_set' => ['o:id' => $itemSetId]
             ];
         }
-        
-        // Add new item sets
+
+        // Add new item sets (or delete if empty)
         foreach ($itemSets as $itemSet) {
-            
+
             $itemSetId = $itemSet->id();
-            
+
             // Skip if already in the site
             if (in_array($itemSetId, $currentItemSetIds)) {
                 continue;
             }
-            
+
+            // Check if the item set is empty (has no items)
+            $itemsResponse = $api->search('items', ['item_set_id' => $itemSetId]);
+            $itemCount = $itemsResponse->getTotalResults();
+
+            if ($itemCount === 0) {
+                // Item set is empty, delete it
+                echo "    Item set (ID: $itemSetId) is empty, deleting...\n";
+                try {
+                    $api->delete('item_sets', $itemSetId);
+                    $deletedCount++;
+                    echo "    Deleted empty item set (ID: $itemSetId)\n";
+                } catch (Exception $e) {
+                    echo "    Error deleting empty item set (ID: $itemSetId): " . $e->getMessage() . "\n";
+                }
+                continue;
+            }
+
             // Prepare item set data for update
             $itemSetData = cleanItemSetForUpdate($itemSet);
-            
+
             // Only remove the dcterms:subject field, not all fields
             if (isset($itemSetData['dcterms:subject'])) {
                 $itemSetData['dcterms:subject']= [];
@@ -422,18 +441,22 @@ function addItemSetsToSite($siteId, $api, $entityManager) {
 
             $addedCount++;
         }
-        
+
         // Update the site with new item sets
         if ($addedCount > 0) {
             // Make sure we're only sending the site item set data
             $siteUpdateData = [
                 'o:site_item_set' => $updatedSiteData['o:site_item_set']
             ];
-            
+
             $api->update('sites', $siteId, $siteUpdateData, [], ['isPartial' => true]);
             echo "    Added $addedCount item sets to site (ID: $siteId)\n";
         }
-        
+
+        if ($deletedCount > 0) {
+            echo "    Deleted $deletedCount empty item sets\n";
+        }
+
         return $addedCount;
     } catch (Exception $e) {
         echo "    Error adding item sets to site: " . $e->getMessage() . "\n";
