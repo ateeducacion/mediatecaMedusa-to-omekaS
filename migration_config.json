@@ -26,10 +26,9 @@
           "entries_to_skip": 0,
           "entries_max": 0,
           "info_diffs": false,
-          "action": "append",
+          "action": "create",
           "action_unidentified": "create",
           "identifier_name": [
-             "dcterms:identifier"
           ],
           "value_datatype_literal": false,
           "allow_duplicate_identifiers": false,
