@@ -52,7 +52,7 @@
             ],
             "browse_layout": "grid",
             "truncate_body_property": "ellipsis",
-            "footer_copyright": "<div>\n   <span>© Gobierno de Canarias</span>\n</div>\n<div>\n   <span><a href=\"https://www.gobiernodecanarias.org/principal/avisolegal.html\" target=\"_blank\" rel=\"noreferrer noopener\">Aviso legal</a></span>\n   <span><a href=\"https://www.gobiernodecanarias.org/eucd/politica_privacidad/index.html\" target=\"_blank\" rel=\"noreferrer noopener\">Política de privacidad</a></span>\n</div>\n<div></div>",
+            "footer_copyright": "<div>\n   <span>© Gobierno de Canarias</span>\n</div>\n<div>\n   <span><a href=\"https://www.gobiernodecanarias.org/principal/avisolegal.html\" target=\"_blank\" rel=\"noreferrer noopener\">Aviso legal</a></span>\n   <span><a href=\"https://www.gobiernodecanarias.org/eucd/politica_privacidad/index.html\" target=\"_blank\" rel=\"noreferrer noopener\">Política de privacidad</a></span>\n</div>\n",
             "resource_page_blocks": {
                 "items": {
                     "main": [
