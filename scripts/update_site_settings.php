@@ -437,11 +437,11 @@ function createRedirectPage($siteId, $siteSlug, $baseUrl, $api) {
         ])->getContent();
 
         if (!empty($existingPages)) {
-            // Update the existing page
+            // Update the existing page (use isPartial => false to replace all blocks)
             $existingPage = reset($existingPages);
             $pageId = $existingPage->id();
             echo "    Updating existing redirect page (ID: $pageId)...\n";
-            $api->update('site_pages', $pageId, $pageData, [], ['isPartial' => true]);
+            $api->update('site_pages', $pageId, $pageData, [], ['isPartial' => false]);
         } else {
             // Create a new page
             $response = $api->create('site_pages', $pageData);
