@@ -26,6 +26,9 @@
 
 ### Requisitos del Servidor
 
+### Modulos php
+   xml, xmlreader, xsl
+
 #### Políticas de ImageMagick
 
 Configurar en el archivo de políticas de ImageMagick:
@@ -105,7 +108,7 @@ Configurar en el archivo de políticas de ImageMagick:
 5. **Ejecutar migración** (en directorio `scripts`):
    ```bash
    php run_migration_tasks.php \
-       --input-file ../files/preload/pruebas_cauce.json \
+       --input-file ../files/import/pruebas_cauce.json \
        --output-file ./scripts/output.json \
        --delete-tasks \
        --config-site-file default_site_conf.json \
@@ -146,3 +149,4 @@ Configurar en el archivo de políticas de ImageMagick:
 ## 7. Tareas Pendientes
 
 - [ ] Refinar plantilla de recurso creada
+
