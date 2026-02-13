@@ -78,29 +78,71 @@ NOmbres de centros en mayusculas
 Comandos para MIGRACIÓN:
 python main.py --config migration_config.json --omeka-url [host]/api --key-identity hX2u9b3JvlztF5fh0sibuJk8evWTe6MV --key-credential YdXCg8Ca0iS77puYEaMo5U8Qj4riPfgV --wp-username admincauce --csv example_channels.csv --output-file pruebas_cauce.json
 
-php run_migration_tasks.php --input-file ../../files/preload/pruebas_cauce.json --output-file volume/scripts/output.json --delete-tasks --config-site-file default_site_conf.json --default-nav --base-url http://localhost:8888
+php run_migration_tasks.php --input-file ../files/preload/pruebas_cauce.json --output-file ./scripts/output.json --delete-tasks --config-site-file default_site_conf.json --default-nav --base-url http://localhost:8888
 
 
-/var/www/medusa/mediateca/wp-includes/class-wp-site-query.php
+Preparación server omeka para MIGRACIÓN
+1. Directorio scripts en /var/www/html
+2. Aegurar que existe /var/www/html/omeka-s (si no existe hacer ln -s /var/www/html /var/www/html/omeka-s)
+3. Asegurar que existe /var/www/html/omeka-s/files/preload (si no existe hacer ln -s /var/www/html/omeka-s/files/import /var/www/html/omeka-s/files/preload)
 
 
 HOJA DE RUTA MIGRACIÓN:
- - Desarrollos y ajustes necesarios
-    - IsolatesSites
-        - UserRepresentation API para añadir campos del plugin: 
-    - Establecer opciones del tema
-        - hacemos fork del tema Freedom
-        - hacer plantilla común para items
-        - poner tema en pre
-    - Descargar última versión de IsolatesSites
-    - Script para establecer parametros correctos de IsolatesSites en pre
-    - Frontal del portal: Globallandingpage
 - Configuración inicial
     - Modulos:
-        - 
+        - Advanced Resource Template 	Repositorio oficial Omeka
+        - Bulk Import	3.4.59*	Repositorio oficial Omeka *Debe ser esta versión y no la superior porque ha problemas
+        - CAS	0.6.3*	https://github.com/ateeducacion/omeka-s-CAS Incluye modificación de cas_logout, solicitada por CAUCE
+        - Common		Repositorio oficial Omeka
+        - Custom Vocab		Repositorio oficial Omeka
+        - Disk Quota		Repositorio oficial Omeka
+        - Easy Admin		Repositorio oficial Omeka
+        - GlobalLandingPage		Repositorio oficial Omeka
+        - Impersonate		Repositorio oficial Omeka
+        - Isolated Sites   	Repositorio oficial Omeka
+        - ThreeDViewer	1.0.5	Repositorio oficial Omeka
+        - HelpAssistant Repositorio oficial Omeka
+        - Block Plus    Repositorio oficial Omeka
+        - Theme Freedom ATE: https://github.com/ateeducacion/omeka-s-theme-freedom-ate
+    - Requisitos del servidor
+        - Politicas de ImageMagick:
+            <!-- Denegar ZIP -->
+            <policy domain="coder" rights="none" pattern="ZIP" />
+
+            <!-- Permitir EPS (comentar o eliminar la política restrictiva) -->
+            <!-- <policy domain="coder" rights="none" pattern="EPS" /> -->
+            <policy domain="coder" rights="read|write" pattern="EPS" />
+            <!-- Permitir MP4 y MOV -->
+            <policy domain="coder" rights="read|write" pattern="MP4" />
+            <policy domain="coder" rights="read|write" pattern="MOV" />
+        - ffmpeg instalado
+- Pasos a seguir para migración de Información
+    1. Fuera del servidor
+        - Preparar csv de traspaso
+            name,url,slug,editor
+        - Preparar API Keys servidor omeka-s
+        - Ejecutar comando:
+            setup_venv.p1 (PS)
+            source setup_venv.sh (MACOs)
+            python main.py --config migration_config.json --omeka-url [host]/api --key-identity hX2u9b3JvlztF5fh0sibuJk8evWTe6MV --key-credential YdXCg8Ca0iS77puYEaMo5U8Qj4riPfgV --wp-username admincauce --csv example_channels.csv --output-file migracion_XXX.json
+        - Ejecutar comando de limpieza de ficheros xml
+            - limpieza_xml.sh
+            - limpieza_xml.ps1
+    2. En servidor omeka-s
+        - Comprobar trabajos bulkimport
+        - Comprobar sitios y usuarios
+        - ejecutar script de preparación de servidor
+            wget https://github.com/ateeducacion/mediatecaMedusa-to-omekaS/raw/refs/heads/main/scripts/setup_host.sh
+            setup_host.sh
+        - Pasar a servidor:
+            archvivos xml de canales descargados
+            archivo migracion_XXX.json
+        - en directorio scripts ejecutar
+            php run_migration_tasks.php --input-file ../files/preload/pruebas_cauce.json --output-file ./scripts/output.json --delete-tasks --config-site-file default_site_conf.json --default-nav --base-url https://www.gobiernodecanarias.org/medusa/mediateca
+            
 - Ajuste incial de datos
-    - Propiedad de item_sets
-        - Pasar a admin los [86] item_sets comunes
+    - Política de item_sets
+        - Sólo se migran los item-sets que contienen algún item.
 - Portada
     - Indicar sitios destacados
     - Preparar páginas de condiciones de uso y/o terminos de servicio
@@ -108,32 +150,16 @@ HOJA DE RUTA MIGRACIÓN:
     - Necesitamos lista de directores para el alta de usuarios
 - Preparar correo a centros para informar de cambio de plataforma
     - Dar posibilidad de rescindir el servicio
+- Refinar plantilla de recurso creada
+
+- 
     
 
 
 
-Información devuelta por CAS:
-Attribute	Value(s)	Type
-cn	[FRANCISCO JESÚS MATEOS DÍAZ]	Principal
-givenName	[FRANCISCO JESÚS]	Principal
-mail	[fmatdia@gobiernodecanarias.org]	Principal
-sn	[MATEOS DÍAZ]	Principal
-sn1	[MATEOS]	Principal
-sn2	[DÍAZ]	Principal
-uid_gsuite	[fmatdia]	Principal
-credentialType	[UsernamePasswordCredential]	Authentication
-authenticationDate	[1759306859]	Authentication
-authenticationMethod	[METADIRECTORIO]	Authentication
-successfulAuthenticationHandlers	[METADIRECTORIO]	Authentication
 
 
-Params para descarga por fechas:
-content
-attachment
-attachment_start_date
-2025-09
-attachment_end_date
-2025-09
+
 
 
 
