@@ -130,10 +130,11 @@ $failureCount = 0;
 
 foreach ($users as $index => $userEntity) {
     $userId   = $userEntity->getId();
-    $userName = $userEntity->getName();
-    $userNum  = $index + 1;
+    $userEmail = $userEntity->getEmail();
+    $userName  = strstr($userEmail, '@', true); // extract part before '@'
+    $userNum   = $index + 1;
 
-    echo "\n[$userNum/$totalUsers] Processing user ID: $userId (name: $userName)\n";
+    echo "\n[$userNum/$totalUsers] Processing user ID: $userId (email: $userEmail, CAS username: $userName)\n";
 
     $userSuccess = true;
 
