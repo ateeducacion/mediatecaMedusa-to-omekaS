@@ -26,7 +26,7 @@
 define('SCRIPT_VERSION', '1.0.0');
 
 // Parse command line arguments
-$options = getopt('', ['resource-template-id:', 'user-id::', 'omeka-path::']);
+$options = getopt('', ['resource-template-id:', 'user-id:', 'omeka-path:']);
 
 // Validate required arguments
 if (!isset($options['resource-template-id'])) {
@@ -36,7 +36,7 @@ if (!isset($options['resource-template-id'])) {
 }
 
 $resourceTemplateId = (int)$options['resource-template-id'];
-$targetUserId       = isset($options['user-id']) ? (int)$options['user-id'] : null;
+$targetUserId       = (isset($options['user-id']) && $options['user-id'] !== '') ? (int)$options['user-id'] : null;
 $omekaPath          = isset($options['omeka-path']) ? $options['omeka-path'] : '/var/www/html';
 
 // Display script info
