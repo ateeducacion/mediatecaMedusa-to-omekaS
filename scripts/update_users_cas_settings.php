@@ -169,11 +169,17 @@ exit($failureCount > 0 ? 1 : 0);
 
 /**
  * Insert or update a row in the cas_user table linking the CAS username to the
- * Omeka user ID. If the user already has an entry, the username is updated to
- * match the current Omeka username.
+ * Omeka user ID.
+ *
+ * Table structure: id (varchar PRIMARY KEY = CAS username), user_id (int)
+ *
+ * - If a row with the same user_id already exists and the id matches, skip.
+ * - If a row with the same user_id exists but with a different id (username
+ *   changed), delete the old row and insert the new one.
+ * - If no row exists for this user_id, insert a new one.
  *
  * @param int    $userId     The Omeka user ID
- * @param string $userName   The Omeka (and CAS) username
+ * @param string $userName   The Omeka (and CAS) username (stored as id)
  * @param object $connection The Doctrine DBAL connection
  * @return bool True if successful, false otherwise
  */
@@ -183,28 +189,32 @@ function addCasUser($userId, $userName, $connection) {
 
         // Check whether a record already exists for this user_id
         $existing = $connection->fetchAssociative(
-            'SELECT id, user_name FROM cas_user WHERE user_id = ?',
+            'SELECT id FROM cas_user WHERE user_id = ?',
             [$userId]
         );
 
         if ($existing) {
-            if ($existing['user_name'] === $userName) {
-                echo "  [CAS] Entry already exists with correct username. No update needed.\n";
+            if ($existing['id'] === $userName) {
+                echo "  [CAS] Entry already exists and is correct. No update needed.\n";
             } else {
-                // Update the username to match current Omeka username
+                // Username changed: replace the row (id is PK so we delete + insert)
                 $connection->executeStatement(
-                    'UPDATE cas_user SET user_name = ? WHERE user_id = ?',
+                    'DELETE FROM cas_user WHERE user_id = ?',
+                    [$userId]
+                );
+                $connection->executeStatement(
+                    'INSERT INTO cas_user (id, user_id) VALUES (?, ?)',
                     [$userName, $userId]
                 );
-                echo "  [CAS] Updated username from '{$existing['user_name']}' to '$userName'.\n";
+                echo "  [CAS] Updated: replaced id '{$existing['id']}' with '$userName' for user_id=$userId.\n";
             }
         } else {
             // Insert a new record
             $connection->executeStatement(
-                'INSERT INTO cas_user (user_name, user_id) VALUES (?, ?)',
+                'INSERT INTO cas_user (id, user_id) VALUES (?, ?)',
                 [$userName, $userId]
             );
-            echo "  [CAS] Created cas_user entry: user_name='$userName', user_id=$userId.\n";
+            echo "  [CAS] Created cas_user entry: id='$userName', user_id=$userId.\n";
         }
 
         return true;
