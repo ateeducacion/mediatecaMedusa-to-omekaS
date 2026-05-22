@@ -4,7 +4,7 @@
 
 Este script configura los usuarios de Omeka S para que puedan acceder correctamente al panel de administración mediante CAS (Central Authentication Service). Realiza dos acciones por usuario:
 
-1. **Registra al usuario en la tabla `cas_user`** con la tupla `(user_name, user_id)`, asumiendo que el nombre de usuario de Omeka coincide con el nombre de usuario de CAS.
+1. **Registra al usuario en la tabla `cas_user`** con la tupla `(cas_username, user_id)`, donde el nombre de usuario de CAS se extrae de la parte local del email del usuario en Omeka (todo lo que precede al `@`).
 2. **Establece el ajuste de usuario `default_resource_template`** al valor indicado mediante `--resource-template-id`.
 
 ## Uso
@@ -47,10 +47,16 @@ php scripts/update_users_cas_settings.php --resource-template-id 3 --user-id 42 
 
 ## Comportamiento detallado
 
+### Derivación del nombre de usuario CAS
+
+El nombre de usuario CAS se obtiene extrayendo la parte local del email del usuario en Omeka (todo lo que aparece antes del `@`). Por ejemplo, el email `ceipejemplo@educacion.es` produce el nombre de usuario CAS `ceipejemplo`.
+
 ### Tabla `cas_user`
 
-- Si el usuario **no tiene** entrada en `cas_user`, se crea un nuevo registro `(user_name, user_id)`.
-- Si el usuario **ya tiene** entrada pero con un `user_name` diferente, se actualiza al nombre de usuario actual de Omeka.
+La tabla tiene la columna `id` (varchar, clave primaria) que almacena el nombre de usuario CAS, y `user_id` (int) que referencia al usuario de Omeka.
+
+- Si el usuario **no tiene** entrada en `cas_user`, se crea un nuevo registro.
+- Si el usuario **ya tiene** entrada pero con un `id` diferente (el email cambió), se elimina la fila antigua y se inserta la nueva.
 - Si el usuario ya tiene la entrada correcta, no se realiza ningún cambio.
 
 ### Ajuste `default_resource_template`
@@ -86,16 +92,16 @@ Retrieving all users from database...
 Found 5 user(s) to process.
 -------------------------------------------
 
-[1/5] Processing user ID: 1 (name: admin)
+[1/5] Processing user ID: 1 (email: admin@educacion.es, CAS username: admin)
   [CAS] Checking cas_user entry for user ID 1 (username: admin)...
-  [CAS] Created cas_user entry: user_name='admin', user_id=1.
+  [CAS] Created cas_user entry: id='admin', user_id=1.
   [Settings] Setting default_resource_template=3 for user 1...
   [Settings] default_resource_template set to 3.
   ✓ User 1 updated successfully
 
-[2/5] Processing user ID: 2 (name: ceipejemplo)
+[2/5] Processing user ID: 2 (email: ceipejemplo@educacion.es, CAS username: ceipejemplo)
   [CAS] Checking cas_user entry for user ID 2 (username: ceipejemplo)...
-  [CAS] Entry already exists with correct username. No update needed.
+  [CAS] Entry already exists and is correct. No update needed.
   [Settings] Setting default_resource_template=3 for user 2...
   [Settings] default_resource_template set to 3.
   ✓ User 2 updated successfully
@@ -122,7 +128,8 @@ Script completed.
 
 ## Notas
 
-- El script asume que el `name` del usuario en Omeka coincide exactamente con el nombre de usuario en CAS.
+- El nombre de usuario CAS se extrae de la parte local del email del usuario en Omeka (antes del `@`). Asegúrate de que los emails están correctamente configurados en Omeka y coinciden con los nombres de usuario de CAS.
+- Si el email de un usuario cambia, el script detectará la discrepancia en `cas_user` y actualizará la entrada automáticamente.
 - El código de salida es `0` si todos los usuarios se procesaron sin errores, `1` si alguno falló.
 - El usuario administrador (ID 1) se usa internamente para las operaciones de API pero también es procesado como cualquier otro usuario.
 
