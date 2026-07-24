@@ -76,7 +76,11 @@
                     ]
                 }
             },
-            "header_menu": "1"
+            "header_menu": "1",
+            "top_bar_logo": "40",
+            "landing_link": "1",
+            "landing_link_logo": "41",
+            "landing_link_url": "https://www3.gobiernodecanarias.org/medusa/mediateca"
         }
     }
 }
