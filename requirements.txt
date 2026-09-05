@@ -1,4 +1,4 @@
 requests>=2.34.2
 typing>=3.7.4.3
-coverage>=7.15.4
+coverage>=7.16.0
 pdoc>=16.0.0
