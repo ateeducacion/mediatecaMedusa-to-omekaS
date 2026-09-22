@@ -42,7 +42,9 @@ docker cp omeka-s-docker-omekas-1:/tmp/sites_disk_usage.csv .
 Se replica exactamente el cálculo que hace el módulo DiskQuota (`DiskQuota\Service\DiskQuotaManager`) al comprobar las cuotas, sumando `media.size` de los medios con fichero original (`has_original = 1`):
 
 - **Usuario**: medios cuyo propietario es el usuario.
-- **Site**: medios de los ítems asignados al site (`item_site`) **más** medios de los ítems que pertenecen a colecciones asignadas al site (`site_item_set`). Un ítem accesible por ambas vías se cuenta dos veces, igual que hace el módulo.
+- **Site**: medios de los ítems asignados al site (`item_site`). Las colecciones asignadas al site (`site_item_set`) no cuentan: asignar una colección a un site no hace que sus ítems pertenezcan al site.
+
+> Este es el cálculo de DiskQuota desde la corrección de la [issue #20](https://github.com/ateeducacion/omeka-s-DiskQuota/issues/20) (PR #21). Las versiones anteriores del módulo sumaban también los ítems de las colecciones del site, contando ítems dos veces y cargando al site ítems ajenos. Si la instancia tiene una versión anterior del módulo, el uso de los sites que muestra este script será menor que el que usa el módulo para bloquear subidas: actualiza el módulo antes de ajustar las cuotas.
 
 ## Cuota vigente
 
@@ -77,4 +79,4 @@ ATE - Área de Tecnología Educativa
 
 ## Fecha
 
-2026-09-21
+2026-09-21 (actualizado 2026-09-22)

@@ -12,10 +12,9 @@
  *   - Compute the used disk space per user and per site, using the same rules
  *     as the DiskQuota module (DiskQuota\Service\DiskQuotaManager):
  *       * User: sum of media.size of media owned by the user (has_original = 1)
- *       * Site: sum of media.size of items assigned to the site (item_site)
- *               + sum of media.size of items in item sets assigned to the site
- *               (site_item_set). An item reachable both ways is counted twice,
- *               exactly as the module does when enforcing the quota.
+ *       * Site: sum of media.size of media whose item is assigned to the site
+ *               (item_site). Item sets attached to the site (site_item_set) do
+ *               not count, as in DiskQuota since the fix for issue #20.
  *   - Read the current 'diskquota_user_quota' / 'diskquota_site_quota' setting,
  *     falling back to the global default when it is not set
  *
@@ -37,7 +36,7 @@
  */
 
 // Define constants
-define('SCRIPT_VERSION', '1.0.0');
+define('SCRIPT_VERSION', '1.1.0');
 define('BYTES_PER_MB', 1024 * 1024);
 // Fallback defaults used by DiskQuotaManager when the global setting is missing
 define('DEFAULT_USER_QUOTA_MB', 500);
@@ -161,25 +160,13 @@ function buildUserRows($connection, $defaultQuota) {
  * @return array List of rows (associative arrays)
  */
 function buildSiteRows($connection, $defaultQuota) {
-    // Media of items assigned directly to the site
-    $fromItems = fetchKeyValue($connection, '
+    // Only item_site assigns items to a site; attached item sets do not
+    $usage = fetchKeyValue($connection, '
         SELECT si.site_id, COALESCE(SUM(m.size), 0)
         FROM media m
-        JOIN item i ON m.item_id = i.id
-        JOIN item_site si ON si.item_id = i.id
+        JOIN item_site si ON si.item_id = m.item_id
         WHERE m.has_original = 1
         GROUP BY si.site_id
-    ');
-
-    // Media of items belonging to item sets assigned to the site
-    $fromItemSets = fetchKeyValue($connection, '
-        SELECT sis.site_id, COALESCE(SUM(m.size), 0)
-        FROM media m
-        JOIN item i ON m.item_id = i.id
-        JOIN item_item_set iis ON iis.item_id = i.id
-        JOIN site_item_set sis ON sis.item_set_id = iis.item_set_id
-        WHERE m.has_original = 1
-        GROUP BY sis.site_id
     ');
 
     $quotas = fetchSettings($connection, 'site_setting', 'site_id', 'diskquota_site_quota');
@@ -194,8 +181,7 @@ function buildSiteRows($connection, $defaultQuota) {
     $rows = [];
     foreach ($sites as $site) {
         $siteId = (int)$site['id'];
-        $used   = (isset($fromItems[$siteId]) ? (int)$fromItems[$siteId] : 0)
-                + (isset($fromItemSets[$siteId]) ? (int)$fromItemSets[$siteId] : 0);
+        $used   = isset($usage[$siteId]) ? (int)$usage[$siteId] : 0;
         $hasOwn = array_key_exists($siteId, $quotas);
         $quota  = $hasOwn ? $quotas[$siteId] : $defaultQuota;
 
